@@ -4,6 +4,7 @@ project(BlockCraft VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
+
 set(SOURCES
 	src/main.cpp
 
@@ -19,6 +20,8 @@ set(SOURCES
 	src/Game/Blocks/GrassBlock.hpp
 	src/Game/Blocks/SandBlock.cpp
 	src/Game/Blocks/SandBlock.hpp
+
+	src/Utils/DestructCall.hpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -27,18 +30,34 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/s
 # Add a macro:
 #target_compile_definitions(${PROJECT_NAME} PRIVATE SOME_MACRO)
 
-# This line creates the source code directory structure in visual studio.
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/src" PREFIX Sources FILES ${SOURCES} ${HEADERS})
+
+# Create the source code directory structure in visual studio.
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/src" PREFIX Source FILES ${SOURCES} ${HEADERS})
+
+# Set as default startup item.
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+
+# Vulkan
+find_package(Vulkan REQUIRED FATAL_ERROR)
+
+message(WARNING ${Vulkan_FOUND})
+message(WARNING ${Vulkan_INCLUDE_DIRS})
+message(WARNING ${Vulkan_LIBRARIES})
 
 
-# GLAD
-add_subdirectory(dependencies/glad)
+target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${Vulkan_LIBRARIES})
 
 # GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_VULKAN_STATIC ON CACHE BOOL "" FORCE)
 add_subdirectory(dependencies/glfw)
 
-target_link_libraries(${PROJECT_NAME} glad)
-target_link_libraries(${PROJECT_NAME} glfw)
+#target_include_directories(glfw PUBLIC ${VULKAN_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
+
+
+#GLM
+target_include_directories(${PROJECT_NAME} PRIVATE dependencies/glm)

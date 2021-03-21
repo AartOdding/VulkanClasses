@@ -1,65 +1,74 @@
-#include <glad/glad.h>
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
+
 #include <iostream>
+#include <stdexcept>
 
+#include "Application.hpp"
+#include "Utils/DestructCall.hpp"
 
-
-int main()
+namespace
 {
-    glfwSetErrorCallback([](int errorCode, const char* errorDescription) {
-        std::cerr << "GLFW error " << errorCode << ": " << errorDescription << std::endl;
-    });
-
-    if (!glfwInit())
+    void initWindow()
     {
-        std::cerr << "Failed to initialize GLFW." << std::endl;
-        std::exit(1);
+
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
-    glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, true);
-    glfwWindowHint(GLFW_DECORATED, true);
-    glfwWindowHint(GLFW_SCALE_TO_MONITOR, true);
+}
 
-    auto window = glfwCreateWindow(720, 480, "Project name", nullptr, nullptr);
+/*
+int main() {
+    glfwInit();
 
-    if (!window)
-    {
-        std::cerr << "Failed to create window." << std::endl;
-        glfwTerminate();
-        std::exit(1);
-    }
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
 
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
+    uint32_t extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
-    glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
-        glViewport(0, 0, width, height);
-    });
+    std::cout << extensionCount << " extensions supported\n";
 
-    if (!gladLoadGL())
-    {
-        std::cerr << "Failed to load OpenGL." << std::endl;
-        glfwTerminate();
-        std::exit(1);
-    }
+    glm::mat4 matrix;
+    glm::vec4 vec;
+    auto test = matrix * vec;
 
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
-
-
-        glClearColor(0.1, 0, 0.1, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-
-        glfwSwapBuffers(window);
     }
 
     glfwDestroyWindow(window);
+
     glfwTerminate();
+
+    return 0;
+}
+*/
+
+int main()
+{
+    try
+    {
+        glfwInit();
+
+        Utils::DestructCall destructGlfw = []()
+        {
+            glfwTerminate();
+        };
+
+        Application application;
+
+        Utils::DestructCall d1 = []() { std::cout << "hello d1" << std::endl; };
+        Utils::DestructCall d2{ []() { std::cout << "hello d2" << std::endl; } };
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Uncaught exception:\n" << e.what() << std::endl;
+        return 1;
+    }
+    return 0;
 }
