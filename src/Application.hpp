@@ -1,9 +1,12 @@
 #pragma once
 
-#define GLFW_INCLUDE_VULKAN
+#include <memory>
+
 #include <GLFW/glfw3.h>
 
 #include "Utils/DestructCall.hpp"
+#include "Vulkan/VulkanInstance.hpp"
+
 
 
 class Application
@@ -20,15 +23,12 @@ public:
 private:
 
 	void initWindow();
-	void initVulkan();
 
 	// Destructed in reverse order:
-	Utils::DestructCall m_destructGlfw;
 	Utils::DestructCall m_destructWindow;
-	Utils::DestructCall m_destructVulkan;
 
 	GLFWwindow* m_window;
-	VkInstance m_vulkanInstance;
+	std::unique_ptr<Vulkan::VulkanInstance> m_vulkan;
 
 	static Application* g_instance;
 };

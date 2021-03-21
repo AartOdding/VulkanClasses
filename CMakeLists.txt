@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCES
 	src/main.cpp
+	src/Application.cpp
+	src/Application.hpp
 
 	src/Game/BlockID.hpp
 	src/Game/BlockType.cpp
@@ -22,6 +24,13 @@ set(SOURCES
 	src/Game/Blocks/SandBlock.hpp
 
 	src/Utils/DestructCall.hpp
+	src/Utils/SetOperations.hpp
+	
+	src/Vulkan/VulkanInstance.cpp
+	src/Vulkan/VulkanInstance.hpp
+	src/Vulkan/VulkanSettings.hpp
+	src/Vulkan/VulkanWindow.cpp
+	src/Vulkan/VulkanWindow.hpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
