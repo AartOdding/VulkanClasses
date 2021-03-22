@@ -1,9 +1,15 @@
 #pragma once
 
+#include <array>
+#include <functional>
+#include <optional>
 #include <string>
 #include <unordered_set>
 
+#include <vulkan/vulkan.h>
+
 #include "Utils/Version.hpp"
+#include "Vulkan/PhysicalDeviceID.hpp"
 
 
 namespace Vulkan
@@ -26,6 +32,9 @@ namespace Vulkan
 
 		std::unordered_set<std::string> requiredValidationLayers{};
 		std::unordered_set<std::string> optionalValidationLayers{};
+
+		bool headlessOnly = false;
+		Vulkan::PhysicalDeviceID physicalDeviceOverride;
 	};
 
 }

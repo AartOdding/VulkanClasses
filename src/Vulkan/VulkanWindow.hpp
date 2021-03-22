@@ -7,8 +7,14 @@ namespace Vulkan
 	{
 	public:
 
+		VulkanWindow();
+		~VulkanWindow();
+
+		VulkanWindow(const VulkanWindow&) = delete;
+		VulkanWindow(VulkanWindow&&) = delete;
 
 	private:
+
 
 	};
 }
