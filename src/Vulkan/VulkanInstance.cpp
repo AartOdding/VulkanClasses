@@ -141,12 +141,6 @@ namespace Vulkan
 		return newSettings;
 	}
 
-	bool VulkanInstance::comparePhysicalDevices(const VkPhysicalDevice& lhs, const VkPhysicalDevice& rhs)
-	{
-		std::cout << "test" << std::endl;
-		return true;
-	}
-
 	void VulkanInstance::initGlfw()
 	{
 		if (glfwInit() == GLFW_TRUE)

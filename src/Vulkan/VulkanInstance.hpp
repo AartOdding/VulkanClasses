@@ -38,8 +38,7 @@ namespace Vulkan
 	private:
 
 		static VulkanSettings completeSettings(const VulkanSettings& settings);
-		static bool comparePhysicalDevices(const VkPhysicalDevice& lhs, const VkPhysicalDevice& rhs);
-
+		
 		void initGlfw();
 		void createVulkanInstance(const VulkanSettings& settings);
 
@@ -48,8 +47,8 @@ namespace Vulkan
 		std::vector<VkPhysicalDevice> getSuitablePhysicalDevices(VkInstance instance, const VulkanSettings& settings) const;
 
 		void pickPhysicalDevice(const VulkanSettings& settings);
-		int getBestQueueFamilyIndex();
 		void createLogicalDevice(const VulkanSettings& settings);
+		int getBestQueueFamily();
 
 		Utils::DestructCall m_destructGlfw;
 		Utils::DestructCall m_destructVulkan;
