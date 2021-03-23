@@ -29,6 +29,9 @@ namespace Vulkan
 		static std::unordered_set<std::string> getAvailableValidationLayerNames();
 		static std::unordered_set<std::string> getAvailableInstanceExtensionNames();
 
+		std::vector<VkExtensionProperties> getAvailableDeviceExtensions();
+		std::unordered_set<std::string> getAvailableDeviceExtensionNames();
+
 		std::vector<VkPhysicalDevice> getPhysicalDevices() const;
 		std::vector<VkQueueFamilyProperties> getQueueFamilies(VkPhysicalDevice device) const;
 
@@ -47,11 +50,12 @@ namespace Vulkan
 		std::vector<VkPhysicalDevice> getSuitablePhysicalDevices(VkInstance instance, const VulkanSettings& settings) const;
 
 		void pickPhysicalDevice(const VulkanSettings& settings);
-		void findQueueFamilies(int& graphicsQueue);
-		void createLogicalDevice();
+		int getBestQueueFamilyIndex();
+		void createLogicalDevice(const VulkanSettings& settings);
 
 		Utils::DestructCall m_destructGlfw;
 		Utils::DestructCall m_destructVulkan;
+		Utils::DestructCall m_destructLogicalDevice;
 
 		VkInstance m_vulkanInstance;
 		VkPhysicalDevice m_physicalDevice;

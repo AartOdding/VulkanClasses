@@ -16,8 +16,7 @@ namespace Vulkan
 		initGlfw();
 		createVulkanInstance(newSettings);
 		pickPhysicalDevice(newSettings);
-
-		createLogicalDevice();
+		createLogicalDevice(newSettings);
 	}
 
 	VulkanInstance::~VulkanInstance()
@@ -125,13 +124,13 @@ namespace Vulkan
 
 		for (int i = 0; i < glfwExtensionCount; ++i)
 		{
-			newSettings.requiredInstanceExtensions.insert(glfwExtensions[i]);
+			newSettings.instanceExtensions.insert(glfwExtensions[i]);
 		}
 
 #ifdef NDEBUG
 		// In release mode, dont add validation layers
 #else
-		newSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
+		newSettings.validationLayers.insert("VK_LAYER_KHRONOS_validation");
 #endif
 
 		return newSettings;
@@ -162,58 +161,26 @@ namespace Vulkan
 	void VulkanInstance::createVulkanInstance(const VulkanSettings& settings)
 	{
 		const auto availableValidationLayers = getAvailableValidationLayerNames();
-		const auto availableInstanceExtensions = getAvailableInstanceExtensionNames();
-
-		auto desiredValidationLayers = Utils::setUnion(
-			settings.requiredValidationLayers, 
-			settings.optionalValidationLayers);
-
-		auto desiredInstanceExtensions = Utils::setUnion(
-			settings.requiredInstanceExtensions,
-			settings.optionalInstanceExtensions);
-
-		const auto missingValidationLayers = Utils::setDifference(
-			desiredValidationLayers, availableValidationLayers);
-
-		const auto missingInstanceExtensions = Utils::setDifference(
-			desiredInstanceExtensions, availableInstanceExtensions);
-
-		for (const auto& missingLayer : missingValidationLayers)
-		{
-			if (settings.requiredValidationLayers.count(missingLayer))
-			{
-				throw std::runtime_error("Missing required validation layer: " + missingLayer);
-			}
-			else
-			{
-				std::cout << "Warning: Missing requested validation layer: " << missingLayer << std::endl;
-				desiredValidationLayers.erase(missingLayer);
-			}
-		}
-
-		for (const auto& missingExtension : missingInstanceExtensions)
-		{
-			if (settings.requiredInstanceExtensions.count(missingExtension))
-			{
-				throw std::runtime_error("Missing required instance extension: " + missingExtension);
-			}
-			else
-			{
-				std::cout << "Warning: Missing requested instance extension: " << missingExtension << std::endl;
-				desiredInstanceExtensions.erase(missingExtension);
-			}
-		}
-
+		
 		std::vector<const char*> validationLayers;
-		validationLayers.reserve(desiredValidationLayers.size());
-		for (const auto& layer : desiredValidationLayers)
+		validationLayers.reserve(settings.validationLayers.size());
+
+		for (const auto& layer : settings.validationLayers)
 		{
-			validationLayers.push_back(layer.c_str());
+			if (availableValidationLayers.count(layer) > 0)
+			{
+				validationLayers.push_back(layer.c_str());
+			}
+			else
+			{
+				std::cout << "Warning: Missing requested validation layer: " << layer << std::endl;
+			}
 		}
 
 		std::vector<const char*> instanceExtensions;
-		instanceExtensions.reserve(desiredInstanceExtensions.size());
-		for (const auto& extension : desiredInstanceExtensions)
+		instanceExtensions.reserve(settings.instanceExtensions.size());
+
+		for (const auto& extension : settings.instanceExtensions)
 		{
 			instanceExtensions.push_back(extension.c_str());
 		}
@@ -266,13 +233,7 @@ namespace Vulkan
 
 	bool VulkanInstance::isPhysicalDeviceSuitable(VkPhysicalDevice device, const VulkanSettings& settings) const
 	{
-		bool suitable = true;
-
-		if (!settings.headlessOnly)
-		{
-			suitable &= canPhysicalDevicePresent(device);
-		}
-		return suitable;
+		return canPhysicalDevicePresent(device);
 	}
 
 	std::vector<VkPhysicalDevice> VulkanInstance::getSuitablePhysicalDevices(VkInstance instance, const VulkanSettings& settings) const
@@ -293,34 +254,53 @@ namespace Vulkan
 
 	void VulkanInstance::pickPhysicalDevice(const VulkanSettings& settings)
 	{
+		auto allDevices = getPhysicalDevices();
+
 		if (settings.physicalDeviceOverride)
 		{
-			// check if exists.
-			// check if suitable
-			// if yes, take it
-			// if no give warning, and search for default
-		}
-		else
-		{
-			// take suitable devices
-			// compare for best using comparison in settings
-			// set it
+			VkPhysicalDevice deviceOverride = nullptr;
+
+			for (const auto& device : allDevices)
+			{
+				VkPhysicalDeviceProperties properties;
+				vkGetPhysicalDeviceProperties(device, &properties);
+
+				if (PhysicalDeviceID(properties) == settings.physicalDeviceOverride)
+				{
+					deviceOverride = device;
+					break;
+				}
+			}
+
+			if (deviceOverride == nullptr)
+			{
+				std::cout << "Warning requested physical device not found." << std::endl;
+			}
+			else
+			{
+				if (isPhysicalDeviceSuitable(deviceOverride, settings))
+				{
+					VkPhysicalDeviceProperties deviceProperties;
+					vkGetPhysicalDeviceProperties(deviceOverride, &deviceProperties);
+
+					m_physicalDevice = deviceOverride;
+					std::cout << "Using GPU: " << deviceProperties.deviceName << std::endl;
+					return;
+				}
+				else
+				{
+					std::cout << "Warning requested physical device not suitable." << std::endl;
+				}
+			}
 		}
 
 		auto suitableDevices = getSuitablePhysicalDevices(m_vulkanInstance, settings);
-
-		// TODO: add option for override which device is used.
 
 		// Try to find a discrete gpu
 		for (const auto& device : suitableDevices)
 		{
 			VkPhysicalDeviceProperties deviceProperties;
 			vkGetPhysicalDeviceProperties(device, &deviceProperties);
-
-
-			PhysicalDeviceID id2{ deviceProperties };
-
-			auto id3 = id2;
 
 			if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			{
@@ -345,15 +325,20 @@ namespace Vulkan
 		}
 
 		// Last resort: take anything.
-		VkPhysicalDeviceProperties deviceProperties;
-		vkGetPhysicalDeviceProperties(suitableDevices[0], &deviceProperties);
+		if (suitableDevices.size() > 0)
+		{
+			VkPhysicalDeviceProperties deviceProperties;
+			vkGetPhysicalDeviceProperties(suitableDevices[0], &deviceProperties);
 
-		std::cout << "Using GPU: " << deviceProperties.deviceName << std::endl;
-		m_physicalDevice = suitableDevices[0];
-		return;
+			std::cout << "Using GPU: " << deviceProperties.deviceName << std::endl;
+			m_physicalDevice = suitableDevices[0];
+			return;
+		}
+
+		throw std::runtime_error("No suitable physical device found.");
 	}
 
-	void VulkanInstance::findQueueFamilies(int& graphicsQueue)
+	int VulkanInstance::getBestQueueFamilyIndex()
 	{
 		uint32_t queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyCount, nullptr);
@@ -364,25 +349,47 @@ namespace Vulkan
 		// Find the first graphics queue:
 		for (int i = 0; i < queueFamilyCount; ++i)
 		{
-			if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			auto queueFlags = queueFamilies[i].queueFlags;
+
+			if (queueFlags & VK_QUEUE_GRAPHICS_BIT &&
+				queueFlags & VK_QUEUE_COMPUTE_BIT &&
+				queueFlags & VK_QUEUE_TRANSFER_BIT &&
+				queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)
 			{
-				graphicsQueue = i;
-				return;
+				return i;
 			}
 		}
 		throw std::runtime_error("Failed to find Vulkan graphics queue.");
 	}
 
-	void VulkanInstance::createLogicalDevice()
+	void VulkanInstance::createLogicalDevice(const VulkanSettings& settings)
 	{
-		float graphicsqueuePriority = 1.0f;
-		int graphicsQueue = -1;
+		const auto availableValidationLayers = getAvailableValidationLayerNames();
 
-		findQueueFamilies(graphicsQueue);
+		std::vector<const char*> validationLayers;
+		validationLayers.reserve(settings.validationLayers.size());
+
+		for (const auto& layer : settings.validationLayers)
+		{
+			if (availableValidationLayers.count(layer) > 0)
+			{
+				validationLayers.push_back(layer.c_str());
+			}
+		}
+
+		std::vector<const char*> deviceExtensions;
+		deviceExtensions.reserve(settings.deviceExtensions.size());
+
+		for (const auto& extension : settings.deviceExtensions)
+		{
+			deviceExtensions.push_back(extension.c_str());
+		}
+
+		float graphicsqueuePriority = 1.0f;
 
 		VkDeviceQueueCreateInfo queueCreateInfo{};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = graphicsQueue;
+		queueCreateInfo.queueFamilyIndex = getBestQueueFamilyIndex();
 		queueCreateInfo.queueCount = 1;
 		queueCreateInfo.pQueuePriorities = &graphicsqueuePriority;
 
@@ -390,11 +397,28 @@ namespace Vulkan
 
 		VkDeviceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-
 		createInfo.pQueueCreateInfos = &queueCreateInfo;
 		createInfo.queueCreateInfoCount = 1;
-
 		createInfo.pEnabledFeatures = &deviceFeatures;
+		createInfo.enabledLayerCount = validationLayers.size();
+		createInfo.ppEnabledLayerNames = validationLayers.data();
+		createInfo.enabledExtensionCount = deviceExtensions.size();
+		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
+		VkResult result = vkCreateDevice(m_physicalDevice , &createInfo, nullptr, &m_logicalDevice);
+
+		if (result == VK_SUCCESS)
+		{
+			m_destructLogicalDevice = [this]()
+			{
+				std::cout << "Destroying logical device." << std::endl;
+				vkDestroyDevice(m_logicalDevice, nullptr);
+			};
+		}
+		else
+		{
+			throw std::runtime_error("Failed to create logical device.");
+		}
 	}
 
 }

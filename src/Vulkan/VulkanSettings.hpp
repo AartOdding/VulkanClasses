@@ -24,16 +24,10 @@ namespace Vulkan
 		Utils::Version engineVersion{ 1, 0, 0 };
 		Utils::Version vulkanVersion{ 1, 0, 0 };
 
-		std::unordered_set<std::string> requiredDeviceExtensions{};
-		std::unordered_set<std::string> optionalDeviceExtensions{};
+		std::unordered_set<std::string> deviceExtensions{};
+		std::unordered_set<std::string> instanceExtensions{};
+		std::unordered_set<std::string> validationLayers{};
 
-		std::unordered_set<std::string> requiredInstanceExtensions{};
-		std::unordered_set<std::string> optionalInstanceExtensions{};
-
-		std::unordered_set<std::string> requiredValidationLayers{};
-		std::unordered_set<std::string> optionalValidationLayers{};
-
-		bool headlessOnly = false;
 		Vulkan::PhysicalDeviceID physicalDeviceOverride;
 	};
 
