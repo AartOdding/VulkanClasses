@@ -337,7 +337,7 @@ namespace Vulkan
 		throw std::runtime_error("No suitable physical device found.");
 	}
 
-	int VulkanInstance::getBestQueueFamilyIndex()
+	int VulkanInstance::getBestQueueFamily()
 	{
 		uint32_t queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyCount, nullptr);
@@ -385,7 +385,7 @@ namespace Vulkan
 		}
 
 		const float mainQueuePriority = 1.0f;
-		const int mainQueueIndex = getBestQueueFamilyIndex();
+		const int mainQueueIndex = getBestQueueFamily();
 
 		VkDeviceQueueCreateInfo queueCreateInfo{};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
