@@ -110,9 +110,14 @@ namespace Vulkan
 		return queueFamilies;
 	}
 
-	VkPhysicalDevice VulkanInstance::getActivePhysicalDevice() const
+	VkPhysicalDevice VulkanInstance::getActivePhysicalDevice()
 	{
 		return m_physicalDevice;
+	}
+
+	VkQueue VulkanInstance::getMainCommandQueue()
+	{
+		return m_mainCommandQueue;
 	}
 
 	VulkanSettings VulkanInstance::completeSettings(const VulkanSettings& settings)
@@ -385,13 +390,14 @@ namespace Vulkan
 			deviceExtensions.push_back(extension.c_str());
 		}
 
-		float graphicsqueuePriority = 1.0f;
+		const float mainQueuePriority = 1.0f;
+		const int mainQueueIndex = getBestQueueFamilyIndex();
 
 		VkDeviceQueueCreateInfo queueCreateInfo{};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = getBestQueueFamilyIndex();
 		queueCreateInfo.queueCount = 1;
-		queueCreateInfo.pQueuePriorities = &graphicsqueuePriority;
+		queueCreateInfo.queueFamilyIndex = mainQueueIndex;
+		queueCreateInfo.pQueuePriorities = &mainQueuePriority;
 
 		VkPhysicalDeviceFeatures deviceFeatures{};
 
@@ -414,6 +420,8 @@ namespace Vulkan
 				std::cout << "Destroying logical device." << std::endl;
 				vkDestroyDevice(m_logicalDevice, nullptr);
 			};
+
+			vkGetDeviceQueue(m_logicalDevice, mainQueueIndex, 0, &m_mainCommandQueue);
 		}
 		else
 		{

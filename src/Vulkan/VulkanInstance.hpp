@@ -29,13 +29,11 @@ namespace Vulkan
 		static std::unordered_set<std::string> getAvailableValidationLayerNames();
 		static std::unordered_set<std::string> getAvailableInstanceExtensionNames();
 
-		std::vector<VkExtensionProperties> getAvailableDeviceExtensions();
-		std::unordered_set<std::string> getAvailableDeviceExtensionNames();
-
 		std::vector<VkPhysicalDevice> getPhysicalDevices() const;
 		std::vector<VkQueueFamilyProperties> getQueueFamilies(VkPhysicalDevice device) const;
 
-		VkPhysicalDevice getActivePhysicalDevice() const;
+		VkPhysicalDevice getActivePhysicalDevice();
+		VkQueue getMainCommandQueue();
 
 	private:
 
@@ -60,6 +58,7 @@ namespace Vulkan
 		VkInstance m_vulkanInstance;
 		VkPhysicalDevice m_physicalDevice;
 		VkDevice m_logicalDevice;
+		VkQueue m_mainCommandQueue;
 	};
 
 }
