@@ -5,7 +5,8 @@
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
-#include "Utils/DestructCall.hpp"
+#include "Utils/NoCopy.hpp"
+#include "Utils/ScopeGuard.hpp"
 #include "Vulkan/VulkanSettings.hpp"
 #include "Vulkan/VulkanWindow.hpp"
 
@@ -13,15 +14,12 @@
 namespace Vulkan
 {
 
-	class VulkanInstance
+	class VulkanInstance : Utils::NoCopy
 	{
 	public:
 
 		VulkanInstance(const VulkanSettings& settings);
 		~VulkanInstance();
-
-		VulkanInstance(const VulkanInstance&) = delete;
-		VulkanInstance(VulkanInstance&&) = delete;
 
 		static std::vector<VkLayerProperties> getAvailableValidationLayers();
 		static std::vector<VkExtensionProperties> getAvailableInstanceExtensions();
@@ -34,6 +32,9 @@ namespace Vulkan
 
 		VkPhysicalDevice getActivePhysicalDevice();
 		VkQueue getMainCommandQueue();
+
+		VkInstance getVkInstance();
+		const VkInstance getVkInstance() const;
 
 	private:
 
@@ -50,9 +51,9 @@ namespace Vulkan
 		void createLogicalDevice(const VulkanSettings& settings);
 		int getBestQueueFamily();
 
-		Utils::DestructCall m_destructGlfw;
-		Utils::DestructCall m_destructVulkan;
-		Utils::DestructCall m_destructLogicalDevice;
+		Utils::ScopeGuard m_destructGlfw;
+		Utils::ScopeGuard m_destructVulkan;
+		Utils::ScopeGuard m_destructLogicalDevice;
 
 		VkInstance m_vulkanInstance;
 		VkPhysicalDevice m_physicalDevice;

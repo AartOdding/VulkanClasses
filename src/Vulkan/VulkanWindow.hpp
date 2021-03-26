@@ -1,20 +1,33 @@
 #pragma once
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
+#include <Utils/NoCopy.hpp>
+#include <Utils/ScopeGuard.hpp>
+
 
 namespace Vulkan
 {
-	class VulkanWindow
+	class VulkanInstance;
+
+
+	class VulkanWindow : Utils::NoCopy
 	{
 	public:
 
-		VulkanWindow();
+		VulkanWindow(const VulkanInstance& vulkanInstance);
 		~VulkanWindow();
 
-		VulkanWindow(const VulkanWindow&) = delete;
-		VulkanWindow(VulkanWindow&&) = delete;
+		void update();
 
 	private:
 
+		GLFWwindow* m_window;
+		VkSurfaceKHR m_surface;
+
+		Utils::ScopeGuard m_windowCleanup;
+		Utils::ScopeGuard m_surfaceCleanup;
 
 	};
 }

@@ -4,8 +4,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Utils/DestructCall.hpp"
 #include "Vulkan/VulkanInstance.hpp"
+#include "Vulkan/VulkanWindow.hpp"
 
 
 
@@ -22,13 +22,8 @@ public:
 
 private:
 
-	void initWindow();
-
-	// Destructed in reverse order:
-	Utils::DestructCall m_destructWindow;
-
-	GLFWwindow* m_window;
 	std::unique_ptr<Vulkan::VulkanInstance> m_vulkan;
+	std::unique_ptr<Vulkan::VulkanWindow> m_window;
 
 	static Application* g_instance;
 };

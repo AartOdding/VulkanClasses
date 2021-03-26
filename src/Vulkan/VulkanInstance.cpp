@@ -11,9 +11,10 @@ namespace Vulkan
 
 	VulkanInstance::VulkanInstance(const VulkanSettings& settings)
 	{
+		initGlfw();
+
 		VulkanSettings newSettings = completeSettings(settings);
 
-		initGlfw();
 		createVulkanInstance(newSettings);
 		pickPhysicalDevice(newSettings);
 		createLogicalDevice(newSettings);
@@ -118,6 +119,16 @@ namespace Vulkan
 	VkQueue VulkanInstance::getMainCommandQueue()
 	{
 		return m_mainCommandQueue;
+	}
+
+	VkInstance VulkanInstance::getVkInstance()
+	{
+		return m_vulkanInstance;
+	}
+
+	const VkInstance VulkanInstance::getVkInstance() const
+	{
+		return m_vulkanInstance;
 	}
 
 	VulkanSettings VulkanInstance::completeSettings(const VulkanSettings& settings)
@@ -355,10 +366,13 @@ namespace Vulkan
 				queueFlags & VK_QUEUE_TRANSFER_BIT &&
 				queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)
 			{
-				return i;
+				if (glfwGetPhysicalDevicePresentationSupport(m_vulkanInstance, m_physicalDevice, i))
+				{
+					return i;
+				}
 			}
 		}
-		throw std::runtime_error("Failed to find Vulkan graphics queue.");
+		throw std::runtime_error("Failed to find suitable queue family.");
 	}
 
 	void VulkanInstance::createLogicalDevice(const VulkanSettings& settings)

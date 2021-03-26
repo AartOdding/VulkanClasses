@@ -22,10 +22,18 @@ set(SOURCES
 	src/Game/Blocks/GrassBlock.hpp
 	src/Game/Blocks/SandBlock.cpp
 	src/Game/Blocks/SandBlock.hpp
-
-	src/Utils/DestructCall.hpp
-	src/Utils/SetOperations.hpp
 	
+	src/Utils/NoCopy.hpp
+	src/Utils/ScopeGuard.cpp
+	src/Utils/ScopeGuard.hpp
+	src/Utils/SetOperations.hpp
+	src/Utils/Version.hpp
+	
+	src/Vk/Instance.cpp
+	src/Vk/Instance.hpp
+	
+	src/Vulkan/PhysicalDeviceID.cpp
+	src/Vulkan/PhysicalDeviceID.hpp
 	src/Vulkan/VulkanInstance.cpp
 	src/Vulkan/VulkanInstance.hpp
 	src/Vulkan/VulkanSettings.hpp

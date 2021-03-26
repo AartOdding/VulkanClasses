@@ -10,7 +10,26 @@
 #include <stdexcept>
 
 #include "Application.hpp"
-#include "Utils/DestructCall.hpp"
+#include "Utils/Assert.hpp"
+#include "Utils/NoCopy.hpp"
+#include "Utils/RaiiWrapper.hpp"
+#include "Utils/ScopeGuard.hpp"
+
+
+struct Glfw : Utils::NoCopy
+{
+    Glfw()
+    {
+        auto success = glfwInit();
+        Utils::Assert(success == GLFW_TRUE, "Failed to initialize glfw.");
+    }
+
+    ~Glfw()
+    {
+        glfwTerminate();
+    }
+};
+
 
 namespace
 {
@@ -49,21 +68,12 @@ int main() {
 }
 */
 
+
 int main()
 {
     try
     {
-        glfwInit();
-
-        Utils::DestructCall destructGlfw = []()
-        {
-            glfwTerminate();
-        };
-
         Application application;
-
-        Utils::DestructCall d1 = []() { std::cout << "hello d1" << std::endl; };
-        Utils::DestructCall d2{ []() { std::cout << "hello d2" << std::endl; } };
     }
     catch (const std::exception& e)
     {
