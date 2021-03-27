@@ -1,13 +1,6 @@
 #include "ScopeGuard.hpp"
 
 
-
-#pragma once
-
-#include <memory>
-#include <functional>
-
-
 namespace Utils
 {
 
