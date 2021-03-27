@@ -1,5 +1,6 @@
 #include "Utils/SetOperations.hpp"
 #include "Vulkan/VulkanInstance.hpp"
+#include "Vulkan/Queries.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -23,92 +24,6 @@ namespace Vulkan
 	VulkanInstance::~VulkanInstance()
 	{
 
-	}
-
-	std::vector<VkLayerProperties> VulkanInstance::getAvailableValidationLayers()
-	{
-		std::vector<VkLayerProperties> availableLayers;
-
-		uint32_t layerCount;
-		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-		if (layerCount > 0)
-		{
-			availableLayers.resize(layerCount);
-			vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-		}
-		return availableLayers;
-	}
-
-	std::vector<VkExtensionProperties> VulkanInstance::getAvailableInstanceExtensions()
-	{
-		std::vector<VkExtensionProperties> availableExtensions;
-
-		uint32_t extensionCount = 0;
-		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-		if (extensionCount > 0)
-		{
-			availableExtensions.resize(extensionCount);
-			vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.data());
-		}
-		return availableExtensions;
-	}
-
-	std::unordered_set<std::string> VulkanInstance::getAvailableValidationLayerNames()
-	{
-		const auto layers = getAvailableValidationLayers();
-
-		std::unordered_set<std::string> result;
-		result.reserve(layers.size());
-
-		for (const auto& layer : layers)
-		{
-			result.insert(layer.layerName);
-		}
-		return result;
-	}
-
-	std::unordered_set<std::string> VulkanInstance::getAvailableInstanceExtensionNames()
-	{
-		const auto extensions = getAvailableInstanceExtensions();
-
-		std::unordered_set<std::string> result;
-		result.reserve(extensions.size());
-
-		for (const auto& extension : extensions)
-		{
-			result.insert(extension.extensionName);
-		}
-		return result;
-	}
-
-	std::vector<VkPhysicalDevice> VulkanInstance::getPhysicalDevices() const
-	{
-		uint32_t physicalDeviceCount = 0;
-		vkEnumeratePhysicalDevices(m_vulkanInstance, &physicalDeviceCount, nullptr);
-
-		std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
-
-		if (physicalDeviceCount > 0)
-		{
-			vkEnumeratePhysicalDevices(m_vulkanInstance, &physicalDeviceCount, physicalDevices.data());
-		}
-		return physicalDevices;
-	}
-
-	std::vector<VkQueueFamilyProperties> VulkanInstance::getQueueFamilies(VkPhysicalDevice device) const
-	{
-		uint32_t queueFamilyCount = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
-
-		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-		
-		if (queueFamilyCount > 0)
-		{
-			vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
-		}
-		return queueFamilies;
 	}
 
 	VkPhysicalDevice VulkanInstance::getActivePhysicalDevice()
@@ -142,6 +57,8 @@ namespace Vulkan
 		{
 			newSettings.instanceExtensions.insert(glfwExtensions[i]);
 		}
+
+		newSettings.deviceExtensions.insert(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
 #ifdef NDEBUG
 		// In release mode, dont add validation layers
@@ -229,7 +146,7 @@ namespace Vulkan
 
 	bool VulkanInstance::canPhysicalDevicePresent(VkPhysicalDevice device) const
 	{
-		auto queueFamilies = getQueueFamilies(device);
+		auto queueFamilies = getAvailableQueueFamilies(device);
 
 		for (int i = 0; i < queueFamilies.size(); ++i)
 		{
@@ -243,12 +160,21 @@ namespace Vulkan
 
 	bool VulkanInstance::isPhysicalDeviceSuitable(VkPhysicalDevice device, const VulkanSettings& settings) const
 	{
-		return canPhysicalDevicePresent(device);
+		bool canPresent = canPhysicalDevicePresent(device);
+
+		auto missingExtensions = settings.deviceExtensions;
+
+		for (const auto& e : getAvailableDeviceExtensions(device))
+		{
+			missingExtensions.erase(e.extensionName);
+		}
+
+		return canPresent && missingExtensions.empty();
 	}
 
 	std::vector<VkPhysicalDevice> VulkanInstance::getSuitablePhysicalDevices(VkInstance instance, const VulkanSettings& settings) const
 	{
-		std::vector<VkPhysicalDevice> allPhysicalDevices = getPhysicalDevices();
+		std::vector<VkPhysicalDevice> allPhysicalDevices = getAvailablePhysicalDevices(instance);
 		std::vector<VkPhysicalDevice> suitablePhysicalDevices;
 		suitablePhysicalDevices.reserve(allPhysicalDevices.size());
 
@@ -264,7 +190,7 @@ namespace Vulkan
 
 	void VulkanInstance::pickPhysicalDevice(const VulkanSettings& settings)
 	{
-		auto allDevices = getPhysicalDevices();
+		auto allDevices = getAvailablePhysicalDevices(m_vulkanInstance);
 
 		if (settings.physicalDeviceOverride)
 		{

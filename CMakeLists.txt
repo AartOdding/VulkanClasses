@@ -31,9 +31,19 @@ set(SOURCES
 	
 	src/Vk/Instance.cpp
 	src/Vk/Instance.hpp
+	src/Vk/LogicalDevice.cpp
+	src/Vk/LogicalDevice.hpp
+	src/Vk/PhysicalDevice.cpp
+	src/Vk/PhysicalDevice.hpp
+	src/Vk/QueueFamily.cpp
+	src/Vk/QueueFamily.hpp
+	src/Vk/Surface.cpp
+	src/Vk/Surface.hpp
 	
 	src/Vulkan/PhysicalDeviceID.cpp
 	src/Vulkan/PhysicalDeviceID.hpp
+	src/Vulkan/Queries.cpp
+	src/Vulkan/Queries.hpp
 	src/Vulkan/VulkanInstance.cpp
 	src/Vulkan/VulkanInstance.hpp
 	src/Vulkan/VulkanSettings.hpp

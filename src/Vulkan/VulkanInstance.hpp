@@ -21,15 +21,6 @@ namespace Vulkan
 		VulkanInstance(const VulkanSettings& settings);
 		~VulkanInstance();
 
-		static std::vector<VkLayerProperties> getAvailableValidationLayers();
-		static std::vector<VkExtensionProperties> getAvailableInstanceExtensions();
-
-		static std::unordered_set<std::string> getAvailableValidationLayerNames();
-		static std::unordered_set<std::string> getAvailableInstanceExtensionNames();
-
-		std::vector<VkPhysicalDevice> getPhysicalDevices() const;
-		std::vector<VkQueueFamilyProperties> getQueueFamilies(VkPhysicalDevice device) const;
-
 		VkPhysicalDevice getActivePhysicalDevice();
 		VkQueue getMainCommandQueue();
 
