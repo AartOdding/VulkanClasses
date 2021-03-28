@@ -15,30 +15,8 @@
 #include "Utils/RaiiWrapper.hpp"
 #include "Utils/ScopeGuard.hpp"
 
+#include <Vk/Instance.hpp>
 
-struct Glfw : Utils::NoCopy
-{
-    Glfw()
-    {
-        auto success = glfwInit();
-        Utils::Assert(success == GLFW_TRUE, "Failed to initialize glfw.");
-    }
-
-    ~Glfw()
-    {
-        glfwTerminate();
-    }
-};
-
-
-namespace
-{
-    void initWindow()
-    {
-
-    }
-
-}
 
 /*
 int main() {
@@ -71,6 +49,10 @@ int main() {
 
 int main()
 {
+    Vulkan::InstanceSettings settings;
+    Vulkan::Instance Instance{ settings };
+
+/*
     try
     {
         Application application;
@@ -79,6 +61,6 @@ int main()
     {
         std::cerr << "Uncaught exception:\n" << e.what() << std::endl;
         return 1;
-    }
+    }*/
     return 0;
 }
