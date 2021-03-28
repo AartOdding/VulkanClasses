@@ -24,8 +24,10 @@ namespace Vulkan
 		Utils::Version applicationVersion{ 1, 0, 0 };
 		Utils::Version engineVersion{ 1, 0, 0 };
 
+		Utils::Version vulkanVersion{ 1, 0, 0 };
+
 		std::set<std::string> requiredInstanceExtensions{};
-		std::set<std::string> optionalinstanceExtensions{};
+		std::set<std::string> optionalInstanceExtensions{};
 		std::set<std::string> requiredValidationLayers{};
 		std::set<std::string> optionalValidationLayers{};
 
@@ -37,14 +39,14 @@ namespace Vulkan
 	{
 	public:
 
-		static std::vector<VkLayerProperties> availableValidationLayers();
+		static std::vector<VkLayerProperties> availableValidationLayerProperties();
 		static std::set<std::string> availableValidationLayerNames();
 
-		static std::vector<VkExtensionProperties> availableInstanceExtensions();
+		static std::vector<VkExtensionProperties> availableInstanceExtensionProperties();
 		static std::set<std::string> availableInstanceExtensionNames();
 
 
-		Instance(const InstanceSettings& settings);
+		Instance(InstanceSettings settings);
 
 		VkInstance get() const;
 
@@ -58,10 +60,10 @@ namespace Vulkan
 
 		std::vector<PhysicalDevice> availablePhysicalDevices() const;
 
-		const std::vector<VkLayerProperties>& enabledValidationLayers() const;
+		const std::vector<VkLayerProperties>& enabledValidationLayerProperties() const;
 		const std::set<std::string>& enabledValidationLayerNames() const;
 
-		const std::vector<VkExtensionProperties>& enabledInstanceExtensions() const;
+		const std::vector<VkExtensionProperties>& enabledInstanceExtensionProperties() const;
 		const std::set<std::string>& enabledInstanceExtensionNames() const;
 
 		bool isValidationLayerEnabled(const std::string& validationLayerName) const;
@@ -74,17 +76,17 @@ namespace Vulkan
 		Utils::ScopeGuard m_destructGlfw;
 		Utils::ScopeGuard m_destructVulkan;
 
-		std::vector<VkLayerProperties> m_enabledValidationLayers;
-		std::vector<VkExtensionProperties> m_enabledInstanceExtensions;
+		std::vector<VkLayerProperties> m_enabledValidationLayerProperties;
+		std::vector<VkExtensionProperties> m_enabledInstanceExtensionProperties;
 		std::set<std::string> m_enabledInstanceExtensionNames;
 		std::set<std::string> m_enabledValidationLayerNames;
 
-		std::string applicationName;
-		std::string engineName;
+		const std::string m_applicationName;
+		const std::string m_engineName;
 
-		Utils::Version m_applicationVersion;
-		Utils::Version m_engineVersion;
+		const Utils::Version m_applicationVersion;
+		const Utils::Version m_engineVersion;
 
-		bool m_headless;
+		const bool m_headless;
 	};
 }
