@@ -2,6 +2,7 @@
 
 #include <set>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -15,27 +16,25 @@
 
 namespace Vulkan
 {
+	class WindowSurface;
 
-	class QueueCreationSettings
+	struct QueueCreationSettings
 	{
-	public:
-
-		QueueCreationSettings(QueueFlags requiredFlags, int count = 1) {}
-		QueueCreationSettings(const QueueFamily& family, int count = 1) {}
-
+		int queueFamily = 0;
+		float priority = 1.0f;
 	};
 
 	struct LogicalDeviceSettings
 	{
-		PhysicalDevice physicalDevice{};
+		VkPhysicalDevice physicalDevice{};
 
-		std::vector<QueueCreationSettings> queues{};
+		std::unordered_map<std::string, QueueCreationSettings> queuesToCreate{};
+		 
+		std::set<std::string> requiredDeviceExtensions{};
+		std::set<std::string> optionalDeviceExtensions{};
 
-		std::set<std::string> requiredInstanceExtensions{};
-		std::set<std::string> optionalInstanceExtensions{};
-
-		// maybe split optional and required if possible? 
-		VkPhysicalDeviceFeatures physicalDeviceFeatures{};
+		// Can split later in required/ optional
+		VkPhysicalDeviceFeatures deviceFeatures{};
 	};
 
 
@@ -43,11 +42,13 @@ namespace Vulkan
 	{
 	public:
 
-		LogicalDevice(LogicalDeviceSettings settings);
+		LogicalDevice(const Instance* instance, LogicalDeviceSettings settings);
 		~LogicalDevice();
 
 	private:
 
+		VkDevice m_logicalDevice;
+		std::vector<VkQueue> m_queues;
 
 	};
 

@@ -28,21 +28,15 @@ int main()
     instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
     
     Vulkan::Instance vulkanInstance{ instanceSettings };
+    auto physicalDevices = vulkanInstance.availablePhysicalDevices();
 
     Vulkan::WindowSurface vulkanWindow{ &vulkanInstance, {} };
 
 
-    auto devices = vulkanInstance.availablePhysicalDevices();
-
-    auto queueFamilies = devices.at(0).availableQueueFamilies();
-
     Vulkan::LogicalDeviceSettings logicalDeviceSettings;
 
-    logicalDeviceSettings.queues =
-    {
-        { Vulkan::QueueFlags::Graphics | Vulkan::QueueFlags::Compute },
-        { Vulkan::QueueFlags::Transfer }
-    };
+    logicalDeviceSettings.physicalDevice = physicalDevices.at(0).get();
+    logicalDeviceSettings.queuesToCreate = { { 0 } };
 
     Vulkan::LogicalDevice logicalDevice{ logicalDeviceSettings };
 

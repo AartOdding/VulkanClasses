@@ -22,7 +22,6 @@ namespace Vulkan
 	QueueFlags operator&(QueueFlags lhs, QueueFlags rhs);
 
 
-
 	class QueueFamily
 	{
 	public:
@@ -36,7 +35,7 @@ namespace Vulkan
 	private:
 
 		const PhysicalDevice* m_device;
-		const int m_index;
+		int m_index;
 
 	};
 
