@@ -37,8 +37,10 @@ set(SOURCES
 	src/Vk/PhysicalDevice.hpp
 	src/Vk/QueueFamily.cpp
 	src/Vk/QueueFamily.hpp
-	src/Vk/Surface.cpp
-	src/Vk/Surface.hpp
+	src/Vk/SwapChain.cpp
+	src/Vk/SwapChain.hpp
+	src/Vk/WindowSurface.cpp
+	src/Vk/WindowSurface.hpp
 	
 	src/Vulkan/PhysicalDeviceID.cpp
 	src/Vulkan/PhysicalDeviceID.hpp

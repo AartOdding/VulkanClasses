@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <thread>
 
 #include "Application.hpp"
 #include "Utils/Assert.hpp"
@@ -17,6 +18,7 @@
 
 #include <Vk/Instance.hpp>
 #include <Vk/LogicalDevice.hpp>
+#include <Vk/WindowSurface.hpp>
 
 
 
@@ -26,6 +28,9 @@ int main()
     instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
     
     Vulkan::Instance vulkanInstance{ instanceSettings };
+
+    Vulkan::WindowSurface vulkanWindow{ &vulkanInstance, {} };
+
 
     auto devices = vulkanInstance.availablePhysicalDevices();
 
@@ -40,6 +45,8 @@ int main()
     };
 
     Vulkan::LogicalDevice logicalDevice{ logicalDeviceSettings };
+
+    std::this_thread::sleep_for(std::chrono::seconds(5));
 
     return 0;
 }
