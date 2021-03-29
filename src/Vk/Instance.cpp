@@ -15,6 +15,7 @@ namespace Vulkan
 		, m_engineName(settings.engineName)
 		, m_applicationVersion(settings.applicationVersion)
 		, m_engineVersion(settings.engineVersion)
+		, m_vulkanVersion(settings.vulkanVersion)
 		, m_headless(settings.headless)
 	{
 		// GLFW part:
@@ -95,11 +96,11 @@ namespace Vulkan
 
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = settings.applicationName.c_str();
-		appInfo.applicationVersion = settings.applicationVersion.vkVersion();
-		appInfo.pEngineName = settings.engineName.c_str();
-		appInfo.engineVersion = settings.engineVersion.vkVersion();
-		appInfo.apiVersion = settings.vulkanVersion.vkVersion();
+		appInfo.pApplicationName = m_applicationName.c_str();
+		appInfo.applicationVersion = m_applicationVersion.vkVersion();
+		appInfo.pEngineName = m_engineName.c_str();
+		appInfo.engineVersion = m_engineVersion.vkVersion();
+		appInfo.apiVersion = m_vulkanVersion.vkVersion();
 
 		VkInstanceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -179,8 +180,25 @@ namespace Vulkan
 
 	std::vector<PhysicalDevice> Instance::availablePhysicalDevices() const
 	{
-		throw std::runtime_error("not implemented");
-		return std::vector<PhysicalDevice>();
+		std::vector<VkPhysicalDevice> vulkanDevices;
+		std::vector<PhysicalDevice> devices;
+
+		uint32_t count = 0;
+		vkEnumeratePhysicalDevices(m_instance, &count, nullptr);
+
+		if (count > 0)
+		{
+			vulkanDevices.resize(count);
+			vkEnumeratePhysicalDevices(m_instance, &count, vulkanDevices.data());
+
+			devices.reserve(count);
+			for (const auto& vkDevice : vulkanDevices)
+			{
+				devices.emplace_back(this, vkDevice);
+			}
+		}
+
+		return devices;
 	}
 
 	const std::vector<VkLayerProperties>& Instance::enabledValidationLayerProperties() const
@@ -205,14 +223,12 @@ namespace Vulkan
 
 	bool Instance::isValidationLayerEnabled(const std::string& validationLayerName) const
 	{
-		throw std::runtime_error("not implemented");
-		return true;
+		return m_enabledValidationLayerNames.count(validationLayerName);
 	}
 
 	bool Instance::isInstanceExtensionEnabled(const std::string& instanceExtensionName) const
 	{
-		throw std::runtime_error("not implemented");
-		return true;
+		return m_enabledInstanceExtensionNames.count(instanceExtensionName);
 	}
 
 	std::vector<VkLayerProperties> Instance::availableValidationLayerProperties()

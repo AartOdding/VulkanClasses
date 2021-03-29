@@ -16,51 +16,30 @@
 #include "Utils/ScopeGuard.hpp"
 
 #include <Vk/Instance.hpp>
+#include <Vk/LogicalDevice.hpp>
 
-
-/*
-int main() {
-    glfwInit();
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
-
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-    std::cout << extensionCount << " extensions supported\n";
-
-    glm::mat4 matrix;
-    glm::vec4 vec;
-    auto test = matrix * vec;
-
-    while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
-    }
-
-    glfwDestroyWindow(window);
-
-    glfwTerminate();
-
-    return 0;
-}
-*/
 
 
 int main()
 {
-    Vulkan::InstanceSettings settings;
-    Vulkan::Instance Instance{ settings };
+    Vulkan::InstanceSettings instanceSettings;
+    instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
+    
+    Vulkan::Instance vulkanInstance{ instanceSettings };
 
-/*
-    try
+    auto devices = vulkanInstance.availablePhysicalDevices();
+
+    auto queueFamilies = devices.at(0).availableQueueFamilies();
+
+    Vulkan::LogicalDeviceSettings logicalDeviceSettings;
+
+    logicalDeviceSettings.queues =
     {
-        Application application;
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << "Uncaught exception:\n" << e.what() << std::endl;
-        return 1;
-    }*/
+        { Vulkan::QueueFlags::Graphics | Vulkan::QueueFlags::Compute },
+        { Vulkan::QueueFlags::Transfer }
+    };
+
+    Vulkan::LogicalDevice logicalDevice{ logicalDeviceSettings };
+
     return 0;
 }

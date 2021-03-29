@@ -18,8 +18,8 @@ namespace Vulkan
 
 	struct InstanceSettings
 	{
-		std::string applicationName;
-		std::string engineName;
+		std::string applicationName{};
+		std::string engineName{};
 
 		Utils::Version applicationVersion{ 1, 0, 0 };
 		Utils::Version engineVersion{ 1, 0, 0 };
@@ -86,6 +86,7 @@ namespace Vulkan
 
 		const Utils::Version m_applicationVersion;
 		const Utils::Version m_engineVersion;
+		const Utils::Version m_vulkanVersion;
 
 		const bool m_headless;
 	};

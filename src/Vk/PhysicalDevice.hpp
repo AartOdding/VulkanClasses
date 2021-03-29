@@ -18,10 +18,10 @@ namespace Vulkan
 	public:
 
 		PhysicalDevice();
-		PhysicalDevice(const Instance* instance, VkPhysicalDevice device);
+		PhysicalDevice(const Instance* vulkanInstance, VkPhysicalDevice device);
 
 		VkPhysicalDevice get() const;
-		const Instance* getInstance() const;
+		const Instance* vulkanInstance() const;
 
 		std::vector<QueueFamily> availableQueueFamilies();
 

@@ -44,7 +44,7 @@ namespace Utils
 	std::set<T> setIntersection(const std::set<T>& lhs, const std::set<T>& rhs)
 	{
 		std::set<T> result;
-		std::set_difference(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), std::inserter(result, result.begin()));
+		std::set_intersection(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), std::inserter(result, result.begin()));
 		return result;
 	}
 
