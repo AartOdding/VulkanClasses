@@ -45,10 +45,22 @@ namespace Vulkan
 		LogicalDevice(const Instance* instance, LogicalDeviceSettings settings);
 		~LogicalDevice();
 
+		VkDevice get() const;
+
+		const std::unordered_map<std::string, VkQueue>& queues() const;
+
+		const std::vector<VkExtensionProperties>& enabledDeviceExtensionProperties() const;
+		const std::set<std::string>& enabledDeviceExtensionNames() const;
+
+		bool isDeviceExtensionEnabled(const std::string& deviceExtensionName) const;
+
 	private:
 
 		VkDevice m_logicalDevice;
-		std::vector<VkQueue> m_queues;
+
+		std::unordered_map<std::string, VkQueue> m_queues;
+		std::set<std::string> m_enabledDeviceExtensionNames;
+		std::vector<VkExtensionProperties> m_enabledDeviceExtensionProperties;
 
 	};
 

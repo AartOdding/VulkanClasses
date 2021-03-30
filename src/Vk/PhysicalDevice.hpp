@@ -1,5 +1,7 @@
 #pragma once
 
+#include <set>
+#include <string>
 #include <vector>
 
 #include <Utils/NoCopy.hpp>
@@ -18,17 +20,17 @@ namespace Vulkan
 	public:
 
 		PhysicalDevice();
-		PhysicalDevice(const Instance* vulkanInstance, VkPhysicalDevice device);
+		PhysicalDevice(VkPhysicalDevice device);
 
 		VkPhysicalDevice get() const;
-		const Instance* vulkanInstance() const;
 
-		std::vector<QueueFamily> availableQueueFamilies();
+		std::vector<VkQueueFamilyProperties> availableQueueFamilyProperties() const;
+		std::vector<VkExtensionProperties> availableDeviceExtensionProperties() const;
+		std::set<std::string> availableDeviceExtensionNames() const;
 
 	private:
 
 		VkPhysicalDevice m_device;
-		const Instance* m_instance;
 
 	};
 }

@@ -31,7 +31,7 @@ namespace Vulkan
 		{
 			m_windowCleanup = [window = m_window]()
 			{
-				std::cout << "Destroying window." << std::endl;
+				std::cout << "Destroying Window." << std::endl;
 				glfwDestroyWindow(window);
 			};
 		}
@@ -46,7 +46,7 @@ namespace Vulkan
 		{
 			m_surfaceCleanup = [instance = instance->get(), surface = m_surface]()
 			{
-				std::cout << "Destroying surface." << std::endl;
+				std::cout << "Destroying Surface." << std::endl;
 				vkDestroySurfaceKHR(instance, surface, nullptr);
 			};
 		}

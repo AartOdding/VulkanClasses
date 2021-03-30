@@ -29,7 +29,7 @@ namespace Vulkan
 			{
 				m_destructGlfw = []()
 				{
-					std::cout << "Destroying glfw." << std::endl;
+					std::cout << "Destroying Glfw." << std::endl;
 					glfwTerminate();
 				};
 			}
@@ -194,7 +194,7 @@ namespace Vulkan
 			devices.reserve(count);
 			for (const auto& vkDevice : vulkanDevices)
 			{
-				devices.emplace_back(this, vkDevice);
+				devices.emplace_back(vkDevice);
 			}
 		}
 
