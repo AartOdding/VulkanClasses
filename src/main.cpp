@@ -6,14 +6,14 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 #include <thread>
 
 #include "Application.hpp"
-#include "Utils/Assert.hpp"
+#include "Utils/FileUtils.hpp"
 #include "Utils/NoCopy.hpp"
-#include "Utils/RaiiWrapper.hpp"
 #include "Utils/ScopeGuard.hpp"
 
 #include <Vk/Instance.hpp>
@@ -33,7 +33,7 @@ void printQueues(const std::vector<Vulkan::PhysicalDevice>& physicalDevices, con
             VkBool32 presentSupport = false;
 
             vkGetPhysicalDeviceSurfaceSupportKHR(device.get(), i, windowSurface.surface(), &presentSupport);
-
+             
             std::cout << "Queue family index: " << i
                 << ", max count: " << queueFamilies[i].queueCount
                 << ", can present: " << presentSupport << std::endl;
@@ -44,6 +44,8 @@ void printQueues(const std::vector<Vulkan::PhysicalDevice>& physicalDevices, con
 
 int main()
 {
+    std::cout << std::filesystem::current_path() << std::endl;
+
     Vulkan::InstanceSettings instanceSettings;
     instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
     
@@ -68,6 +70,9 @@ int main()
     Vulkan::LogicalDevice logicalDevice{ &vulkanInstance, logicalDeviceSettings };
 
     auto swapChain = Vulkan::SwapChain(&logicalDevice, &windowSurface);
+
+    auto vert = Utils::readFileBytes("shaders/triangle_vert.spv");
+    auto frag = Utils::readFileBytes("shaders/triangle_frag.spv");
 
     std::this_thread::sleep_for(std::chrono::seconds(5));
 
