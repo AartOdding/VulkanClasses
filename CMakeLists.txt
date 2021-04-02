@@ -64,6 +64,9 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/src" PREFIX Source FILES ${SOURCE
 # Set as default startup item.
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 
+# Set the current working directory to the runtime directory.
+set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/runtime")
+
 # Vulkan
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
