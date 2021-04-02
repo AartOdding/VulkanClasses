@@ -8,8 +8,6 @@
 
 #include <vulkan/vulkan.h>
 
-#include <Vk/QueueFamily.hpp>
-
 
 namespace Vulkan
 {

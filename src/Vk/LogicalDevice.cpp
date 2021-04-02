@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include <Utils/SetOperations.hpp>
+#include <Vk/Instance.hpp>
 #include <Vk/LogicalDevice.hpp>
 
 
@@ -27,13 +28,17 @@ namespace Vulkan
 {
 
 	LogicalDevice::LogicalDevice(const Instance* instance, LogicalDeviceSettings settings)
+		: m_physicalDevice(settings.physicalDevice)
+		, m_enabledDeviceFeatures(settings.deviceFeatures)
 	{
+		if (instance == nullptr)
+		{
+			throw std::runtime_error("Cannot create logical device without instance.");
+		}
 		if (settings.physicalDevice == nullptr)
 		{
-			throw std::runtime_error("Physiscal device was null.");
+			throw std::runtime_error("Cannot create logical device without physical device.");
 		}
-
-		Vulkan::PhysicalDevice physicalDevice{ settings.physicalDevice };
 
 		std::unordered_map<int, QueueFamilyTemp> queueFamilies;
 
@@ -42,6 +47,9 @@ namespace Vulkan
 		{
 			queueFamilies[queueSettings.queueFamily].queues.push_back(
 				{ name, queueSettings.queueFamily, queueSettings.priority });
+
+			m_queueFamilies[name] = queueSettings.queueFamily;
+			m_queuePriorities[name] = queueSettings.priority;
 		}
 
 		// For each family create priories for each queue to be instantiated
@@ -70,6 +78,13 @@ namespace Vulkan
 				static_cast<uint32_t>(family.queues.size()),
 				family.priorities.data()
 			});
+		}
+
+		const Vulkan::PhysicalDevice physicalDevice{ settings.physicalDevice };
+
+		if (!instance->headless())
+		{
+			settings.requiredDeviceExtensions.insert(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 		}
 
 		// Collect device extensions:
@@ -145,9 +160,24 @@ namespace Vulkan
 		return m_logicalDevice;
 	}
 
+	VkPhysicalDevice LogicalDevice::physicalDevice() const
+	{
+		return m_physicalDevice;
+	}
+
 	const std::unordered_map<std::string, VkQueue>& LogicalDevice::queues() const
 	{
 		return m_queues;
+	}
+
+	const std::unordered_map<std::string, int>& LogicalDevice::queueFamilies() const
+	{
+		return m_queueFamilies;
+	}
+
+	const std::unordered_map<std::string, float>& LogicalDevice::queuePriorities() const
+	{
+		return m_queuePriorities;
 	}
 
 	const std::vector<VkExtensionProperties>& LogicalDevice::enabledDeviceExtensionProperties() const
@@ -163,6 +193,11 @@ namespace Vulkan
 	bool LogicalDevice::isDeviceExtensionEnabled(const std::string& deviceExtensionName) const
 	{
 		return m_enabledDeviceExtensionNames.count(deviceExtensionName);
+	}
+
+	const VkPhysicalDeviceFeatures& LogicalDevice::enabledDeviceFeatures() const
+	{
+		return m_enabledDeviceFeatures;
 	}
 
 }

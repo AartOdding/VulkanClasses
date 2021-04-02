@@ -35,8 +35,6 @@ set(SOURCES
 	src/Vk/LogicalDevice.hpp
 	src/Vk/PhysicalDevice.cpp
 	src/Vk/PhysicalDevice.hpp
-	src/Vk/QueueFamily.cpp
-	src/Vk/QueueFamily.hpp
 	src/Vk/SwapChain.cpp
 	src/Vk/SwapChain.hpp
 	src/Vk/WindowSurface.cpp

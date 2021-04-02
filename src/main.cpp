@@ -19,6 +19,7 @@
 #include <Vk/Instance.hpp>
 #include <Vk/LogicalDevice.hpp>
 #include <Vk/WindowSurface.hpp>
+#include <Vk/SwapChain.hpp>
 
 
 
@@ -28,20 +29,24 @@ int main()
     instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
     
     Vulkan::Instance vulkanInstance{ instanceSettings };
-    const auto physicalDevices = vulkanInstance.availablePhysicalDevices();
+    Vulkan::WindowSurface windowSurface{ &vulkanInstance, {} };
 
+    const auto physicalDevices = vulkanInstance.availablePhysicalDevices();
     for (const auto& device : physicalDevices)
     {
         const auto queueFamilies = device.availableQueueFamilyProperties();
 
         for (int i = 0; i < queueFamilies.size(); ++i)
         {
-            std::cout << "Queue family: " << i << ", count: " << queueFamilies[i].queueCount << std::endl;
+            VkBool32 presentSupport = false;
+
+            vkGetPhysicalDeviceSurfaceSupportKHR(device.get(), i, windowSurface.surface(), &presentSupport);
+
+            std::cout << "Queue family index: " << i 
+                << ", max count: " << queueFamilies[i].queueCount 
+                << ", can present: " << presentSupport << std::endl;
         }
     }
-
-    Vulkan::WindowSurface vulkanWindow{ &vulkanInstance, {} };
-
 
     Vulkan::LogicalDeviceSettings logicalDeviceSettings;
 
@@ -54,11 +59,15 @@ int main()
         { "transfer2", { 1, 0.1f } },
         { "compute1",  { 2, 0.01f } }
     };
-    logicalDeviceSettings.optionalDeviceExtensions.insert("gahaha");
-    logicalDeviceSettings.optionalDeviceExtensions.insert("ewf");
-    logicalDeviceSettings.requiredDeviceExtensions.insert(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
     Vulkan::LogicalDevice logicalDevice{ &vulkanInstance, logicalDeviceSettings };
+
+    VkSurfaceCapabilitiesKHR surfaceCapabilities;
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevices.at(0).get(), windowSurface.surface(), &surfaceCapabilities);
+
+    auto formats = Vulkan::SwapChain::supportedFormats(logicalDevice, windowSurface);
+
+    auto swapChain = Vulkan::SwapChain(&logicalDevice, &windowSurface);
 
     std::this_thread::sleep_for(std::chrono::seconds(5));
 

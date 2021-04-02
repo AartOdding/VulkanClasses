@@ -66,4 +66,10 @@ namespace Vulkan
 		return m_window;
 	}
 
+	VkExtent2D WindowSurface::frameBufferSize() const
+	{
+		int x, y;
+		glfwGetFramebufferSize(m_window, &x, &y);
+		return { static_cast<uint32_t>(x), static_cast<uint32_t>(y) };
+	}
 }

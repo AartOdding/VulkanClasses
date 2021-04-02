@@ -2,14 +2,20 @@
 
 #include <string>
 
+#include <vulkan/vulkan.h>
+
 #include "Utils/NoCopy.hpp"
 #include "Utils/ScopeGuard.hpp"
 
+
+
 struct GLFWwindow;
+
 
 namespace Vulkan
 {
 	class Instance;
+
 
 	struct WindowSettings
 	{
@@ -17,6 +23,7 @@ namespace Vulkan
 		int initialWidth = 1280;
 		int initialHeight = 720;
 	};
+
 
 	class WindowSurface : Utils::NoCopy
 	{
@@ -26,6 +33,8 @@ namespace Vulkan
 
 		VkSurfaceKHR surface() const;
 		GLFWwindow* window() const;
+
+		VkExtent2D frameBufferSize() const;
 
 	private:
 
