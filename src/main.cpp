@@ -22,16 +22,8 @@
 #include <Vk/SwapChain.hpp>
 
 
-
-int main()
+void printQueues(const std::vector<Vulkan::PhysicalDevice>& physicalDevices, const Vulkan::WindowSurface& windowSurface)
 {
-    Vulkan::InstanceSettings instanceSettings;
-    instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
-    
-    Vulkan::Instance vulkanInstance{ instanceSettings };
-    Vulkan::WindowSurface windowSurface{ &vulkanInstance, {} };
-
-    const auto physicalDevices = vulkanInstance.availablePhysicalDevices();
     for (const auto& device : physicalDevices)
     {
         const auto queueFamilies = device.availableQueueFamilyProperties();
@@ -42,11 +34,24 @@ int main()
 
             vkGetPhysicalDeviceSurfaceSupportKHR(device.get(), i, windowSurface.surface(), &presentSupport);
 
-            std::cout << "Queue family index: " << i 
-                << ", max count: " << queueFamilies[i].queueCount 
+            std::cout << "Queue family index: " << i
+                << ", max count: " << queueFamilies[i].queueCount
                 << ", can present: " << presentSupport << std::endl;
         }
     }
+}
+
+
+int main()
+{
+    Vulkan::InstanceSettings instanceSettings;
+    instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
+    
+    Vulkan::Instance vulkanInstance{ instanceSettings };
+    Vulkan::WindowSurface windowSurface{ &vulkanInstance, {} };
+
+    const auto physicalDevices = vulkanInstance.availablePhysicalDevices();
+    printQueues(physicalDevices, windowSurface);
 
     Vulkan::LogicalDeviceSettings logicalDeviceSettings;
 
@@ -61,11 +66,6 @@ int main()
     };
 
     Vulkan::LogicalDevice logicalDevice{ &vulkanInstance, logicalDeviceSettings };
-
-    VkSurfaceCapabilitiesKHR surfaceCapabilities;
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevices.at(0).get(), windowSurface.surface(), &surfaceCapabilities);
-
-    auto formats = Vulkan::SwapChain::supportedFormats(logicalDevice, windowSurface);
 
     auto swapChain = Vulkan::SwapChain(&logicalDevice, &windowSurface);
 
