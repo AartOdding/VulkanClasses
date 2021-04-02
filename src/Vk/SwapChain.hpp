@@ -4,6 +4,8 @@
 #include <set>
 
 #include <Utils/NoCopy.hpp>
+#include <Utils/ScopeGuard.hpp>
+
 
 inline bool operator<(const VkSurfaceFormatKHR& lhs, const VkSurfaceFormatKHR& rhs)
 {
@@ -39,7 +41,6 @@ namespace Vulkan
 		static std::set<VkSurfaceFormatKHR> supportedFormats(const LogicalDevice& logicalDevice, const WindowSurface& windowSurface);
 
 		SwapChain(const LogicalDevice* logicalDevice, const WindowSurface* windowSurface, SwapChainSettings settings = SwapChainSettings());
-		~SwapChain();
 
 	private:
 
@@ -50,6 +51,10 @@ namespace Vulkan
 		const WindowSurface* m_windowSurface;
 
 		std::vector<VkImage> m_swapChainImages;
+		std::vector<VkImageView> m_swapChainImageViews;
+
+		Utils::ScopeGuard m_swapChainCleanup;
+		std::vector<Utils::ScopeGuard> m_imageViewCleanups;
 	};
 
 }

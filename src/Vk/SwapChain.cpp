@@ -122,6 +122,14 @@ namespace Vulkan
 		{
 			throw std::runtime_error("Failed to create swap chain.");
 		}
+		else
+		{
+			m_swapChainCleanup = [logicalDevice = m_logicalDevice->get(), swapChain = m_swapChain]()
+			{
+				std::cout << "Destroying Swap Chain." << std::endl;
+				vkDestroySwapchainKHR(logicalDevice, swapChain, nullptr);
+			};
+		}
 
 		// ======================
 
@@ -129,12 +137,43 @@ namespace Vulkan
 		vkGetSwapchainImagesKHR(m_logicalDevice->get(), m_swapChain, &imageCount, nullptr);
 		m_swapChainImages.resize(imageCount);
 		vkGetSwapchainImagesKHR(m_logicalDevice->get(), m_swapChain, &imageCount, m_swapChainImages.data());
-	}
 
-	SwapChain::~SwapChain()
-	{
-		std::cout << "Destroying Swap Chain." << std::endl;
-		vkDestroySwapchainKHR(m_logicalDevice->get(), m_swapChain, nullptr);
+		m_swapChainImageViews.resize(imageCount);
+		m_imageViewCleanups.resize(imageCount);
+
+		for (size_t i = 0; i < m_swapChainImages.size(); i++)
+		{
+			VkImageViewCreateInfo createInfo{};
+			createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			createInfo.image = m_swapChainImages[i];
+
+			createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+			createInfo.format = settings.surfaceFormat.format;
+
+			createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+			createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+			createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+			createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+			createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			createInfo.subresourceRange.baseMipLevel = 0;
+			createInfo.subresourceRange.levelCount = 1;
+			createInfo.subresourceRange.baseArrayLayer = 0;
+			createInfo.subresourceRange.layerCount = 1;
+
+			if (vkCreateImageView(m_logicalDevice->get(), &createInfo, nullptr, &m_swapChainImageViews[i]) != VK_SUCCESS)
+			{
+				throw std::runtime_error("Failed to create image views!");
+			}
+			else
+			{
+				m_imageViewCleanups[i] = [logicalDevice = m_logicalDevice->get(), imageView = m_swapChainImageViews[i], i]()
+				{
+					std::cout << "Destroying Swap Chain Image View " << i << std::endl;
+					vkDestroyImageView(logicalDevice, imageView, nullptr);
+				};
+			}
+		}
 	}
 
 }
