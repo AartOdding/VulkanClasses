@@ -35,6 +35,8 @@ set(SOURCES
 	src/Vk/LogicalDevice.hpp
 	src/Vk/PhysicalDevice.cpp
 	src/Vk/PhysicalDevice.hpp
+	src/Vk/ShaderStage.cpp
+	src/Vk/ShaderStage.hpp
 	src/Vk/SwapChain.cpp
 	src/Vk/SwapChain.hpp
 	src/Vk/WindowSurface.cpp

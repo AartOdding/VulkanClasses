@@ -19,6 +19,7 @@
 #include <Vk/Instance.hpp>
 #include <Vk/LogicalDevice.hpp>
 #include <Vk/WindowSurface.hpp>
+#include <Vk/ShaderStage.hpp>
 #include <Vk/SwapChain.hpp>
 
 
@@ -71,8 +72,8 @@ int main()
 
     auto swapChain = Vulkan::SwapChain(&logicalDevice, &windowSurface);
 
-    auto vert = Utils::readFileBytes("shaders/triangle_vert.spv");
-    auto frag = Utils::readFileBytes("shaders/triangle_frag.spv");
+    auto vert = Vulkan::ShaderStage(&logicalDevice, { VK_SHADER_STAGE_VERTEX_BIT, "shaders/triangle_vert.spv" });
+    auto frag = Vulkan::ShaderStage(&logicalDevice, { VK_SHADER_STAGE_FRAGMENT_BIT, "shaders/triangle_frag.spv" });
 
     std::this_thread::sleep_for(std::chrono::seconds(5));
 
