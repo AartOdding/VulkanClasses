@@ -114,10 +114,10 @@ namespace Vulkan
 
 		if (result == VK_SUCCESS)
 		{
-			m_destructVulkan = [this]()
+			m_destructVulkan = [instance = m_instance]()
 			{
 				std::cout << "Destroying Vulkan." << std::endl;
-				vkDestroyInstance(m_instance, nullptr);
+				vkDestroyInstance(instance, nullptr);
 			};
 		}
 		else
