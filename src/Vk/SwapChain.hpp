@@ -42,6 +42,11 @@ namespace Vulkan
 
 		SwapChain(const LogicalDevice* logicalDevice, const WindowSurface* windowSurface, SwapChainSettings settings = SwapChainSettings());
 
+		VkSwapchainKHR get() const;
+		
+		VkSurfaceFormatKHR surfaceFormat() const;
+		VkPresentModeKHR presentMode() const;
+
 	private:
 
 		VkSwapchainKHR m_swapChain;

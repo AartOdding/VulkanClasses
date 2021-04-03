@@ -176,4 +176,19 @@ namespace Vulkan
 		}
 	}
 
+	VkSwapchainKHR SwapChain::get() const
+	{
+		return m_swapChain;
+	}
+
+	VkSurfaceFormatKHR SwapChain::surfaceFormat() const
+	{
+		return { m_createInfo.imageFormat, m_createInfo.imageColorSpace };
+	}
+
+	VkPresentModeKHR SwapChain::presentMode() const
+	{
+		return m_createInfo.presentMode;
+	}
+
 }
