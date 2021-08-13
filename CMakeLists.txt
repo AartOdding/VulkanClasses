@@ -7,50 +7,39 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCES
 	src/main.cpp
-	src/Application.cpp
-	src/Application.hpp
 
-	src/Game/BlockID.hpp
-	src/Game/BlockType.cpp
-	src/Game/BlockType.hpp
-	src/Game/Chunk.cpp
-	src/Game/Chunk.hpp
-	src/Game/World.cpp
-	src/Game/World.hpp
-
-	src/Game/Blocks/GrassBlock.cpp
-	src/Game/Blocks/GrassBlock.hpp
-	src/Game/Blocks/SandBlock.cpp
-	src/Game/Blocks/SandBlock.hpp
+	src/Vulkan/Utils/NoCopy.hpp
+	src/Vulkan/Utils/ScopeGuard.cpp
+	src/Vulkan/Utils/ScopeGuard.hpp
+	src/Vulkan/Utils/SetOperations.hpp
+	src/Vulkan/Utils/Version.hpp
 	
-	src/Utils/NoCopy.hpp
-	src/Utils/ScopeGuard.cpp
-	src/Utils/ScopeGuard.hpp
-	src/Utils/SetOperations.hpp
-	src/Utils/Version.hpp
+	src/Vulkan/GraphicsPipeline.cpp
+	src/Vulkan/GraphicsPipeline.hpp
+	src/Vulkan/Instance.cpp
+	src/Vulkan/Instance.hpp
+	src/Vulkan/LogicalDevice.cpp
+	src/Vulkan/LogicalDevice.hpp
+	src/Vulkan/PhysicalDevice.cpp
+	src/Vulkan/PhysicalDevice.hpp
+	src/Vulkan/PipelineLayout.cpp
+	src/Vulkan/PipelineLayout.hpp
+	src/Vulkan/ShaderStage.cpp
+	src/Vulkan/ShaderStage.hpp
+	src/Vulkan/SwapChain.cpp
+	src/Vulkan/SwapChain.hpp
+	src/Vulkan/WindowSurface.cpp
+	src/Vulkan/WindowSurface.hpp
 	
-	src/Vk/Instance.cpp
-	src/Vk/Instance.hpp
-	src/Vk/LogicalDevice.cpp
-	src/Vk/LogicalDevice.hpp
-	src/Vk/PhysicalDevice.cpp
-	src/Vk/PhysicalDevice.hpp
-	src/Vk/ShaderStage.cpp
-	src/Vk/ShaderStage.hpp
-	src/Vk/SwapChain.cpp
-	src/Vk/SwapChain.hpp
-	src/Vk/WindowSurface.cpp
-	src/Vk/WindowSurface.hpp
-	
-	src/Vulkan/PhysicalDeviceID.cpp
-	src/Vulkan/PhysicalDeviceID.hpp
-	src/Vulkan/Queries.cpp
-	src/Vulkan/Queries.hpp
-	src/Vulkan/VulkanInstance.cpp
-	src/Vulkan/VulkanInstance.hpp
-	src/Vulkan/VulkanSettings.hpp
-	src/Vulkan/VulkanWindow.cpp
-	src/Vulkan/VulkanWindow.hpp
+	src/VulkanOld/PhysicalDeviceID.cpp
+	src/VulkanOld/PhysicalDeviceID.hpp
+	src/VulkanOld/Queries.cpp
+	src/VulkanOld/Queries.hpp
+	src/VulkanOld/VulkanInstance.cpp
+	src/VulkanOld/VulkanInstance.hpp
+	src/VulkanOld/VulkanSettings.hpp
+	src/VulkanOld/VulkanWindow.cpp
+	src/VulkanOld/VulkanWindow.hpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

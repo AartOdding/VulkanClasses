@@ -11,17 +11,16 @@
 #include <stdexcept>
 #include <thread>
 
-#include "Application.hpp"
-#include "Utils/FileUtils.hpp"
-#include "Utils/NoCopy.hpp"
-#include "Utils/ScopeGuard.hpp"
+#include "Vulkan/Utils/FileUtils.hpp"
+#include "Vulkan/Utils/NoCopy.hpp"
+#include "Vulkan/Utils/ScopeGuard.hpp"
 
-#include <Vk/GraphicsPipeline.hpp>
-#include <Vk/Instance.hpp>
-#include <Vk/LogicalDevice.hpp>
-#include <Vk/WindowSurface.hpp>
-#include <Vk/ShaderStage.hpp>
-#include <Vk/SwapChain.hpp>
+#include <Vulkan/GraphicsPipeline.hpp>
+#include <Vulkan/Instance.hpp>
+#include <Vulkan/LogicalDevice.hpp>
+#include <Vulkan/WindowSurface.hpp>
+#include <Vulkan/ShaderStage.hpp>
+#include <Vulkan/SwapChain.hpp>
 
 
 void printQueues(const std::vector<Vulkan::PhysicalDevice>& physicalDevices, const Vulkan::WindowSurface& windowSurface)
@@ -73,7 +72,7 @@ int main()
 
     auto swapChain = Vulkan::SwapChain(&logicalDevice, &windowSurface);
 
-    auto graphicsPipeline = Vulkan::GraphicsPipeline(&logicalDevice);
+    auto graphicsPipeline = Vulkan::GraphicsPipeline(&logicalDevice, 100, 100);
 
     std::this_thread::sleep_for(std::chrono::seconds(2));
 
