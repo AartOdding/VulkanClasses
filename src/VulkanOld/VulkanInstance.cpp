@@ -115,10 +115,10 @@ namespace Vulkan
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		appInfo.pApplicationName = settings.applicationName.c_str();
-		appInfo.applicationVersion = settings.applicationVersion.vkVersion();
+		appInfo.applicationVersion = getVulkanVersion(settings.applicationVersion);
 		appInfo.pEngineName = settings.engineName.c_str();
-		appInfo.engineVersion = settings.engineVersion.vkVersion();
-		appInfo.apiVersion = settings.vulkanVersion.vkVersion();
+		appInfo.engineVersion = getVulkanVersion(settings.engineVersion);
+		appInfo.apiVersion = getVulkanVersion(settings.vulkanVersion);
 
 		VkInstanceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;

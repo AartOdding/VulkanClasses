@@ -82,13 +82,8 @@ namespace Vulkan
 
 		const Vulkan::PhysicalDevice physicalDevice{ settings.physicalDevice };
 
-		if (!instance->headless())
-		{
-			settings.requiredDeviceExtensions.insert(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-		}
-
 		// Collect device extensions:
-		const auto availableExtensions = physicalDevice.availableDeviceExtensionNames();
+		const auto availableExtensions = physicalDevice.availableDeviceExtensions();
 		const auto desiredExtensions = Utils::setUnion(settings.requiredDeviceExtensions, settings.optionalDeviceExtensions);
 		const auto missingExtensions = Utils::setDifference(desiredExtensions, availableExtensions);
 
@@ -138,15 +133,6 @@ namespace Vulkan
 			}
 		}
 
-		// Store enabled device extension properties:
-		m_enabledDeviceExtensionProperties.reserve(m_enabledDeviceExtensionNames.size());
-		for (const auto& properties : physicalDevice.availableDeviceExtensionProperties())
-		{
-			if (m_enabledDeviceExtensionNames.count(properties.extensionName))
-			{
-				m_enabledDeviceExtensionProperties.push_back(properties);
-			}
-		}
 	}
 
 	LogicalDevice::~LogicalDevice()
@@ -178,11 +164,6 @@ namespace Vulkan
 	const std::unordered_map<std::string, float>& LogicalDevice::queuePriorities() const
 	{
 		return m_queuePriorities;
-	}
-
-	const std::vector<VkExtensionProperties>& LogicalDevice::enabledDeviceExtensionProperties() const
-	{
-		return m_enabledDeviceExtensionProperties;
 	}
 
 	const std::set<std::string>& LogicalDevice::enabledDeviceExtensionNames() const

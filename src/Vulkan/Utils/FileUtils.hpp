@@ -5,7 +5,7 @@
 #include <vector>
 
 
-namespace Utils
+namespace Vulkan::Utils
 {
 
 	inline std::vector<char> readFileBytes(const std::filesystem::path& path)

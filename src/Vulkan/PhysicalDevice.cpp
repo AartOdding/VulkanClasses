@@ -1,4 +1,5 @@
 #include <Vulkan/PhysicalDevice.hpp>
+#include <Vulkan/QueueFamily.hpp>
 
 
 namespace Vulkan
@@ -16,48 +17,57 @@ namespace Vulkan
 
 	}
 
-	VkPhysicalDevice PhysicalDevice::get() const
+	static std::vector<VkQueueFamilyProperties2> availableQueueFamilyProperties(VkPhysicalDevice device)
 	{
-		return m_device;
-	}
-
-	std::vector<VkQueueFamilyProperties> PhysicalDevice::availableQueueFamilyProperties() const
-	{
-		std::vector<VkQueueFamilyProperties> queueFamilies;
+		std::vector<VkQueueFamilyProperties2> queueFamilies;
 
 		uint32_t count = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(m_device, &count, nullptr);
+		vkGetPhysicalDeviceQueueFamilyProperties2(device, &count, nullptr);
 
 		if (count > 0)
 		{
 			queueFamilies.resize(count);
-			vkGetPhysicalDeviceQueueFamilyProperties(m_device, &count, queueFamilies.data());
+			vkGetPhysicalDeviceQueueFamilyProperties2(device, &count, queueFamilies.data());
 		}
 		return queueFamilies;
 	}
 
-	std::vector<VkExtensionProperties> PhysicalDevice::availableDeviceExtensionProperties() const
+	std::vector<QueueFamily> PhysicalDevice::queueFamilies() const
+	{
+		const auto properties = availableQueueFamilyProperties(m_device);
+		std::vector<QueueFamily> queue_families;
+		queue_families.reserve(properties.size());
+
+		for (size_t i = 0; i < properties.size(); ++i)
+		{
+			queue_families.emplace_back(m_device, i, properties[i]);
+		}
+
+		return queue_families;
+	}
+
+	static std::vector<VkExtensionProperties> availableDeviceExtensionProperties(VkPhysicalDevice device)
 	{
 		std::vector<VkExtensionProperties> properties;
 
-		if (m_device)
+		if (device)
 		{
 			uint32_t count = 0;
-			vkEnumerateDeviceExtensionProperties(m_device, nullptr, &count, nullptr);
+			vkEnumerateDeviceExtensionProperties(device, nullptr, &count, nullptr);
 
 			if (count > 0)
 			{
 				properties.resize(count);
-				vkEnumerateDeviceExtensionProperties(m_device, nullptr, &count, properties.data());
+				vkEnumerateDeviceExtensionProperties(device, nullptr, &count, properties.data());
 			}
 		}
 
 		return properties;
 	}
 
-	std::set<std::string> PhysicalDevice::availableDeviceExtensionNames() const
+	std::set<std::string> PhysicalDevice::availableDeviceExtensions() const
 	{
-		const auto properties = availableDeviceExtensionProperties();
+		const auto properties = availableDeviceExtensionProperties(m_device);
 
 		std::set<std::string> names;
 
@@ -66,6 +76,11 @@ namespace Vulkan
 			names.insert(extensionProperties.extensionName);
 		}
 		return names;
+	}
+
+	PhysicalDevice::operator VkPhysicalDevice() const
+	{
+		return m_device;
 	}
 
 }

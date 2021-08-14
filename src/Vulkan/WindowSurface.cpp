@@ -16,10 +16,6 @@ namespace Vulkan
 		{
 			throw std::runtime_error("Cannot create window surface without Instance.");
 		}
-		if (instance->headless())
-		{
-			throw std::runtime_error("Cannot create window surface for headless Instance.");
-		}
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -40,11 +36,12 @@ namespace Vulkan
 			throw std::runtime_error("Failed to create window!");
 		}
 
-		auto result = glfwCreateWindowSurface(instance->get(), m_window, nullptr, &m_surface);
+		auto result = glfwCreateWindowSurface(*instance, m_window, nullptr, &m_surface);
 
 		if (result == VK_SUCCESS)
 		{
-			m_surfaceCleanup = [instance = instance->get(), surface = m_surface]()
+			VkInstance i = *instance;
+			m_surfaceCleanup = [instance = i, surface = m_surface]()
 			{
 				std::cout << "Destroying Surface." << std::endl;
 				vkDestroySurfaceKHR(instance, surface, nullptr);

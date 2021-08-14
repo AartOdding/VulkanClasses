@@ -1,20 +1,22 @@
 #pragma once
 
+#include <stdint.h>
 #include <vulkan/vulkan.h>
 
 
-namespace Utils
+namespace Vulkan::Utils
 {
+
 	struct Version
 	{
-		const int major = 0;
-		const int minor = 0;
-		const int patch = 0;
-
-		uint32_t vkVersion() const
-		{
-			return VK_MAKE_VERSION(major, minor, patch);
-		}
+		const uint32_t major = 0;
+		const uint32_t minor = 0;
+		const uint32_t patch = 0;
 	};
+
+	constexpr uint32_t getVulkanVersion(const Version& version)
+	{
+		return VK_MAKE_VERSION(version.major, version.minor, version.patch);
+	}
 
 }

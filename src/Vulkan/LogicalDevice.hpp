@@ -51,7 +51,6 @@ namespace Vulkan
 		const std::unordered_map<std::string, int>& queueFamilies() const;
 		const std::unordered_map<std::string, float>& queuePriorities() const;
 
-		const std::vector<VkExtensionProperties>& enabledDeviceExtensionProperties() const;
 		const std::set<std::string>& enabledDeviceExtensionNames() const;
 
 		bool isDeviceExtensionEnabled(const std::string& deviceExtensionName) const;
@@ -69,7 +68,6 @@ namespace Vulkan
 		std::unordered_map<std::string, float> m_queuePriorities;
 
 		std::set<std::string> m_enabledDeviceExtensionNames;
-		std::vector<VkExtensionProperties> m_enabledDeviceExtensionProperties;
 
 	};
 

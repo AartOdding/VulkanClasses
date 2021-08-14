@@ -6,12 +6,13 @@
 
 #include <vulkan/vulkan.h>
 
-#include <Vulkan/Utils/NoCopy.hpp>
+#include <Vulkan/Forward.hpp>
+#include <Vulkan/QueueFamily.hpp>
+#include <Vulkan/Utils/Macros.hpp>
 
 
 namespace Vulkan
 {
-	class Instance;
 
 	class PhysicalDevice
 	{
@@ -20,15 +21,18 @@ namespace Vulkan
 		PhysicalDevice();
 		PhysicalDevice(VkPhysicalDevice device);
 
-		VkPhysicalDevice get() const;
+		std::vector<QueueFamily> queueFamilies() const;
 
-		std::vector<VkQueueFamilyProperties> availableQueueFamilyProperties() const;
-		std::vector<VkExtensionProperties> availableDeviceExtensionProperties() const;
-		std::set<std::string> availableDeviceExtensionNames() const;
+		std::set<std::string> availableDeviceExtensions() const;
+
+		operator VkPhysicalDevice() const;
+
+		VULKAN_CLASSES_DEFAULT_COPY_AND_MOVE(PhysicalDevice)
 
 	private:
 
 		VkPhysicalDevice m_device;
 
 	};
+
 }

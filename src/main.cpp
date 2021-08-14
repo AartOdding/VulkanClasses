@@ -23,6 +23,7 @@
 #include <Vulkan/SwapChain.hpp>
 
 
+/*
 void printQueues(const std::vector<Vulkan::PhysicalDevice>& physicalDevices, const Vulkan::WindowSurface& windowSurface)
 {
     for (const auto& device : physicalDevices)
@@ -40,12 +41,40 @@ void printQueues(const std::vector<Vulkan::PhysicalDevice>& physicalDevices, con
                 << ", can present: " << presentSupport << std::endl;
         }
     }
-}
+}*/
 
 
 int main()
 {
-    std::cout << std::filesystem::current_path() << std::endl;
+    std::cout << "Current path: "  << std::filesystem::current_path() << std::endl;
+
+    glfwSetErrorCallback([](int error, const char* description)
+    {
+        std::cerr << "GLFW error (" << error << ") " << description << std::endl;
+    });
+
+    if (!glfwInit())
+    {
+        return 1;
+    }
+    
+    Vulkan::Utils::ScopeGuard terminateGlfw = []() {
+        glfwTerminate();
+    };
+
+    Vulkan::InstanceSettings settings{};
+
+    auto instance = std::make_unique<Vulkan::Instance>(settings);
+
+    for (auto pd : instance->physicalDevices())
+    {
+        auto fams = pd.queueFamilies();
+
+    }
+
+
+    return 0; // =====================
+    
 
     Vulkan::InstanceSettings instanceSettings;
     instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
@@ -53,12 +82,12 @@ int main()
     Vulkan::Instance vulkanInstance{ instanceSettings };
     Vulkan::WindowSurface windowSurface{ &vulkanInstance, {} };
 
-    const auto physicalDevices = vulkanInstance.availablePhysicalDevices();
-    printQueues(physicalDevices, windowSurface);
+    const auto physicalDevices = vulkanInstance.physicalDevices();
+    //printQueues(physicalDevices, windowSurface);
 
     Vulkan::LogicalDeviceSettings logicalDeviceSettings;
 
-    logicalDeviceSettings.physicalDevice = physicalDevices.at(0).get();
+    logicalDeviceSettings.physicalDevice = physicalDevices.at(0);
     logicalDeviceSettings.queuesToCreate = 
     { 
         { "transfer1", { 1, 0.9f } },

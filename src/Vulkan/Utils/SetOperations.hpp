@@ -7,7 +7,7 @@
 #include <vector>
 
 
-namespace Utils
+namespace Vulkan::Utils
 {
 
 	template<typename StdStringContainer>

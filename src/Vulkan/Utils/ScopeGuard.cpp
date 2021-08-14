@@ -1,7 +1,7 @@
 #include <Vulkan/Utils/ScopeGuard.hpp>
 
 
-namespace Utils
+namespace Vulkan::Utils
 {
 
     class ScopeGuard::DestructorCall

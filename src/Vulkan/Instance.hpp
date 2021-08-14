@@ -6,8 +6,7 @@
 
 #include <vulkan/vulkan.h>
 
-#include <Vulkan/Utils/NoCopy.hpp>
-#include <Vulkan/Utils/ScopeGuard.hpp>
+#include <Vulkan/Utils/Macros.hpp>
 #include <Vulkan/Utils/Version.hpp>
 
 #include <Vulkan/PhysicalDevice.hpp>
@@ -28,66 +27,44 @@ namespace Vulkan
 
 		std::set<std::string> requiredInstanceExtensions{};
 		std::set<std::string> optionalInstanceExtensions{};
+
 		std::set<std::string> requiredValidationLayers{};
 		std::set<std::string> optionalValidationLayers{};
-
-		bool headless{ false };
 	};
 
 
-	class Instance : Utils::NoCopy
+	class Instance
 	{
 	public:
 
-		static std::vector<VkLayerProperties> availableValidationLayerProperties();
-		static std::set<std::string> availableValidationLayerNames();
-
-		static std::vector<VkExtensionProperties> availableInstanceExtensionProperties();
-		static std::set<std::string> availableInstanceExtensionNames();
+		static std::set<std::string> availableValidationLayers();
+		static std::set<std::string> availableInstanceExtensions();
 
 
 		Instance(InstanceSettings settings);
+		~Instance();
 
-		VkInstance get() const;
+		const InstanceSettings& settings() const;
 
-		const std::string& applicationName() const;
-		const std::string& engineName() const;
+		const std::set<std::string>& validationLayers() const;
+		const std::set<std::string>& instanceExtensions() const;
 
-		Utils::Version applicationVersion() const;
-		Utils::Version engineVersion() const;
+		bool hasValidationLayer(const std::string& validationLayer) const;
+		bool hasInstanceExtension(const std::string& instanceExtensionName) const;
 
-		bool headless() const;
+		std::vector<PhysicalDevice> physicalDevices() const;
 
-		std::vector<PhysicalDevice> availablePhysicalDevices() const;
+		operator VkInstance() const;
 
-		const std::vector<VkLayerProperties>& enabledValidationLayerProperties() const;
-		const std::set<std::string>& enabledValidationLayerNames() const;
-
-		const std::vector<VkExtensionProperties>& enabledInstanceExtensionProperties() const;
-		const std::set<std::string>& enabledInstanceExtensionNames() const;
-
-		bool isValidationLayerEnabled(const std::string& validationLayerName) const;
-		bool isInstanceExtensionEnabled(const std::string& instanceExtensionName) const;
+		VULKAN_CLASSES_DISABLE_COPY_AND_MOVE(Instance)
 
 	private:
 
 		VkInstance m_instance;
+		InstanceSettings m_settings;
 
-		Utils::ScopeGuard m_destructGlfw;
-		Utils::ScopeGuard m_destructVulkan;
-
-		std::vector<VkLayerProperties> m_enabledValidationLayerProperties;
-		std::vector<VkExtensionProperties> m_enabledInstanceExtensionProperties;
 		std::set<std::string> m_enabledInstanceExtensionNames;
 		std::set<std::string> m_enabledValidationLayerNames;
 
-		const std::string m_applicationName;
-		const std::string m_engineName;
-
-		const Utils::Version m_applicationVersion;
-		const Utils::Version m_engineVersion;
-		const Utils::Version m_vulkanVersion;
-
-		const bool m_headless;
 	};
 }

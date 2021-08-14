@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCES
 	src/main.cpp
 
+	src/Vulkan/Utils/FileUtils.hpp
+	src/Vulkan/Utils/Macros.hpp
 	src/Vulkan/Utils/NoCopy.hpp
 	src/Vulkan/Utils/ScopeGuard.cpp
 	src/Vulkan/Utils/ScopeGuard.hpp
@@ -24,6 +26,8 @@ set(SOURCES
 	src/Vulkan/PhysicalDevice.hpp
 	src/Vulkan/PipelineLayout.cpp
 	src/Vulkan/PipelineLayout.hpp
+	src/Vulkan/QueueFamily.cpp
+	src/Vulkan/QueueFamily.hpp
 	src/Vulkan/ShaderStage.cpp
 	src/Vulkan/ShaderStage.hpp
 	src/Vulkan/SwapChain.cpp

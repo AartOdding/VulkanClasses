@@ -4,7 +4,7 @@
 #include <functional>
 
 
-namespace Utils
+namespace Vulkan::Utils
 {
 
     class ScopeGuard

@@ -1,8 +1,9 @@
 #pragma once
 
 
-namespace Utils
+namespace Vulkan::Utils
 {
+
 	struct NoCopy
 	{
         NoCopy() = default;
