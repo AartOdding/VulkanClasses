@@ -24,16 +24,16 @@ namespace Vulkan
 		pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 		pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-		if (vkCreatePipelineLayout(logicalDevice->get(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS)
+		if (vkCreatePipelineLayout(*logicalDevice, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to create pipeline layout.");
 		}
 		else
 		{
-			m_pipelineLayoutCleanup = [device = logicalDevice->get(), pipelineLayout = m_pipelineLayout]()
+			m_pipelineLayoutCleanup = [device = logicalDevice, pipelineLayout = m_pipelineLayout]()
 			{
 				std::cout << "Destroying Pipeline Layout." << std::endl;
-				vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+				vkDestroyPipelineLayout(*device, pipelineLayout, nullptr);
 			};
 		}
 	}

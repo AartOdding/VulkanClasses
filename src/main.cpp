@@ -62,48 +62,25 @@ int main()
         glfwTerminate();
     };
 
-    Vulkan::InstanceSettings settings{};
+    Vulkan::InstanceSettings isettings{};
 
-    auto instance = std::make_unique<Vulkan::Instance>(settings);
+    auto instance = std::make_unique<Vulkan::Instance>(isettings);
 
-    for (auto pd : instance->physicalDevices())
-    {
-        auto fams = pd.queueFamilies();
+    Vulkan::DeviceSettings dsettings;
+    dsettings.physicalDevice = instance->physicalDevices()[0];
+    dsettings.requiredQueues.push_back({ { VK_QUEUE_GRAPHICS_BIT }, 1.0f });
+    dsettings.optionalQueues.push_back({ { VK_QUEUE_COMPUTE_BIT }, 1.0f });
+    dsettings.optionalQueues.push_back({ { VK_QUEUE_TRANSFER_BIT }, 1.0f });
 
-    }
+    auto device = std::make_unique<Vulkan::Device>(dsettings, instance.get());
+
+
+
+
+    
+    auto resolved = instance->physicalDevices()[0].resolveQueues({ { VK_QUEUE_GRAPHICS_BIT }, { VK_QUEUE_COMPUTE_BIT }, { VK_QUEUE_TRANSFER_BIT } });
 
 
     return 0; // =====================
     
-
-    Vulkan::InstanceSettings instanceSettings;
-    instanceSettings.optionalValidationLayers.insert("VK_LAYER_KHRONOS_validation");
-    
-    Vulkan::Instance vulkanInstance{ instanceSettings };
-    Vulkan::WindowSurface windowSurface{ &vulkanInstance, {} };
-
-    const auto physicalDevices = vulkanInstance.physicalDevices();
-    //printQueues(physicalDevices, windowSurface);
-
-    Vulkan::DeviceSettings logicalDeviceSettings;
-
-    logicalDeviceSettings.physicalDevice = physicalDevices.at(0);
-    logicalDeviceSettings.queuesToCreate = 
-    { 
-        { "transfer1", { 1, 0.9f } },
-        { "compute2", { 2, 0.7f } },
-        { "graphics1", { 0 } },
-        { "transfer2", { 1, 0.1f } },
-        { "compute1",  { 2, 0.01f } }
-    };
-
-    Vulkan::Device logicalDevice{ &vulkanInstance, logicalDeviceSettings };
-
-    auto swapChain = Vulkan::SwapChain(&logicalDevice, &windowSurface);
-
-    auto graphicsPipeline = Vulkan::GraphicsPipeline(&logicalDevice, 100, 100);
-
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-
-    return 0;
 }

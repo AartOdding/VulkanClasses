@@ -19,16 +19,16 @@ namespace Vulkan
 		moduleCreateInfo.codeSize = codeBytes.size();
 		moduleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(codeBytes.data());
 
-		if (vkCreateShaderModule(logicalDevice->get(), &moduleCreateInfo, nullptr, &m_shaderModule) != VK_SUCCESS)
+		if (vkCreateShaderModule(*logicalDevice, &moduleCreateInfo, nullptr, &m_shaderModule) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create shader module.");
 		}
 		else
 		{
-			m_shaderModuleCleanup = [device = logicalDevice->get(), shaderModule = m_shaderModule]()
+			m_shaderModuleCleanup = [device = logicalDevice, shaderModule = m_shaderModule]()
 			{
 				std::cout << "Destroying Shader Module." << std::endl;
-				vkDestroyShaderModule(device, shaderModule, nullptr);
+				vkDestroyShaderModule(*device, shaderModule, nullptr);
 			};
 		}
 	}

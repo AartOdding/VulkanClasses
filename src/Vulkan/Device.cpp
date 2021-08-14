@@ -28,9 +28,8 @@ namespace Vulkan
 {
 
 	Device::Device(DeviceSettings settings, const Instance* instance)
-		: m_physicalDevice(settings.physicalDevice)
-		, m_enabledDeviceFeatures(settings.requiredDeviceFeatures)
 	{
+		/*
 		if (instance == nullptr)
 		{
 			throw std::runtime_error("Cannot create logical device without instance.");
@@ -132,7 +131,7 @@ namespace Vulkan
 				m_queues[queueFamily.queues[i].name] = queue;
 			}
 		}
-
+		*/
 	}
 
 	Device::~Device()

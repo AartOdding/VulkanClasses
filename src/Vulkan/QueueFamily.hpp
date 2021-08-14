@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <set>
 #include <string>
 #include <vector>
@@ -14,6 +15,22 @@
 namespace Vulkan
 {
 
+	struct QueueRequirements
+	{
+		VkQueueFlags queueFlags = 0;
+		VkSurfaceKHR presentTo = nullptr;
+		std::optional<VkExtent3D> minImageTransferGranularity;
+	};
+
+	/*
+	namespace DefaultQueues
+	{
+		static constexpr QueueRequirements Graphics{ true, true, true, false };
+		static constexpr QueueRequirements DedicatedTransfer{ false, false, true, false };
+		static constexpr QueueRequirements DedicatedCompute{ false, true, true, false };
+	}*/
+
+	/*
 	class QueueFamily
 	{
 	public:
@@ -37,5 +54,5 @@ namespace Vulkan
 		VkQueueFamilyProperties2 m_properties;
 
 	};
-
+	*/
 }

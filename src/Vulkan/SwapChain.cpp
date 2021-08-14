@@ -11,7 +11,7 @@
 
 namespace
 {
-
+	/*
 	std::vector<std::uint32_t> getUniqueQueueFamilies(const Vulkan::Device* logicalDevice)
 	{
 		const auto& queues = logicalDevice->queueFamilies();
@@ -190,5 +190,5 @@ namespace Vulkan
 	{
 		return m_createInfo.presentMode;
 	}
-
+	*/
 }

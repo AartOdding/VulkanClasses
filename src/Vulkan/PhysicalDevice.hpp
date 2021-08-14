@@ -21,7 +21,13 @@ namespace Vulkan
 		PhysicalDevice();
 		PhysicalDevice(VkPhysicalDevice device);
 
-		std::vector<QueueFamily> queueFamilies() const;
+		bool isDedicated() const;
+
+		bool supportsQueues(const std::vector<QueueRequirements>& queues) const;
+		std::pair<std::vector<uint64_t>, bool> resolveQueues(const std::vector<QueueRequirements>&queues) const;
+
+
+		//std::vector<QueueFamily> queueFamilies() const;
 
 		std::set<std::string> availableDeviceExtensions() const;
 

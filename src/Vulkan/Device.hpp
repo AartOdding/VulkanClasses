@@ -19,8 +19,9 @@ namespace Vulkan
 	struct DeviceSettings
 	{
 		VkPhysicalDevice physicalDevice{};
-
-		std::vector<std::pair<QueueRequirements, float>> queuesToCreate{}; // Queue requirements and priority (1.0f if you're not sure)
+		
+		std::vector<std::pair<QueueRequirements, float>> requiredQueues{}; // QueueRequirements and priority (1.0f if you're not sure)
+		std::vector<std::pair<QueueRequirements, float>> optionalQueues{}; // QueueRequirements and priority (1.0f if you're not sure)
 		 
 		std::set<std::string> requiredDeviceExtensions{};
 		std::set<std::string> optionalDeviceExtensions{};

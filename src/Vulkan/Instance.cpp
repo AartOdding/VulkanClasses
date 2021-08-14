@@ -27,8 +27,8 @@ namespace Vulkan
 			}
 		}
 
-		m_enabledValidationLayerNames = Utils::setIntersection(desiredLayers, availableLayers);
-		const auto layers = Utils::getCStringList(m_enabledValidationLayerNames);
+		m_validationLayers = Utils::setIntersection(desiredLayers, availableLayers);
+		const auto layers = Utils::getCStringList(m_validationLayers);
 
 		// Collect instance extensions:
 
@@ -44,8 +44,8 @@ namespace Vulkan
 			}
 		}
 
-		m_enabledInstanceExtensionNames = Utils::setIntersection(desiredExtensions, availableExtensions);
-		const auto extensions = Utils::getCStringList(m_enabledInstanceExtensionNames);
+		m_instanceExtensions = Utils::setIntersection(desiredExtensions, availableExtensions);
+		const auto extensions = Utils::getCStringList(m_instanceExtensions);
 
 		// Create the actual instance:
 
@@ -85,22 +85,22 @@ namespace Vulkan
 
 	const std::set<std::string>& Instance::validationLayers() const
 	{
-		return m_enabledValidationLayerNames;
+		return m_validationLayers;
 	}
 
 	const std::set<std::string>& Instance::instanceExtensions() const
 	{
-		return m_enabledInstanceExtensionNames;
+		return m_instanceExtensions;
 	}
 
 	bool Instance::hasValidationLayer(const std::string& validationLayerName) const
 	{
-		return m_enabledValidationLayerNames.count(validationLayerName);
+		return m_validationLayers.count(validationLayerName);
 	}
 
 	bool Instance::hasInstanceExtension(const std::string& instanceExtensionName) const
 	{
-		return m_enabledInstanceExtensionNames.count(instanceExtensionName);
+		return m_instanceExtensions.count(instanceExtensionName);
 	}
 
 	Instance::operator VkInstance() const

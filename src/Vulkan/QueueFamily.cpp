@@ -3,7 +3,7 @@
 
 namespace Vulkan
 {
-
+	/*
 	QueueFamily::QueueFamily()
 		: m_physical_device()
 		, m_index()
@@ -38,5 +38,5 @@ namespace Vulkan
 	{
 		return m_properties;
 	}
-
+	*/
 }
