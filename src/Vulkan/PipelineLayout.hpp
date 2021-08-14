@@ -9,14 +9,14 @@
 
 namespace Vulkan
 {
-	class LogicalDevice;
+	class Device;
 
 
 	class PipelineLayout : Utils::NoCopy
 	{
 	public:
 
-		PipelineLayout(const LogicalDevice* logicalDevice);
+		PipelineLayout(const Device* logicalDevice);
 
 		VkPipelineLayout get() const;
 

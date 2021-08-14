@@ -22,7 +22,7 @@ inline bool operator<(const VkSurfaceFormatKHR& lhs, const VkSurfaceFormatKHR& r
 
 namespace Vulkan
 {
-	class LogicalDevice;
+	class Device;
 	class WindowSurface;
 
 	struct SwapChainSettings
@@ -38,9 +38,9 @@ namespace Vulkan
 	{
 	public:
 
-		static std::set<VkSurfaceFormatKHR> supportedFormats(const LogicalDevice& logicalDevice, const WindowSurface& windowSurface);
+		static std::set<VkSurfaceFormatKHR> supportedFormats(const Device& logicalDevice, const WindowSurface& windowSurface);
 
-		SwapChain(const LogicalDevice* logicalDevice, const WindowSurface* windowSurface, SwapChainSettings settings = SwapChainSettings());
+		SwapChain(const Device* logicalDevice, const WindowSurface* windowSurface, SwapChainSettings settings = SwapChainSettings());
 
 		VkSwapchainKHR get() const;
 		
@@ -52,7 +52,7 @@ namespace Vulkan
 		VkSwapchainKHR m_swapChain;
 		VkSwapchainCreateInfoKHR m_createInfo;
 
-		const LogicalDevice* m_logicalDevice;
+		const Device* m_logicalDevice;
 		const WindowSurface* m_windowSurface;
 
 		std::vector<VkImage> m_swapChainImages;

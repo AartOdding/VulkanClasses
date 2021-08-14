@@ -16,12 +16,12 @@ namespace Vulkan
 		// Collect validation layers:
 
 		const auto availableLayers = availableValidationLayers();
-		const auto desiredLayers = Utils::setUnion(settings.requiredValidationLayers, settings.optionalValidationLayers);
+		const auto desiredLayers = Utils::setUnion(m_settings.requiredValidationLayers, m_settings.optionalValidationLayers);
 		const auto missingLayers = Utils::setDifference(desiredLayers, availableLayers);
 
 		for (const auto& missingLayer : missingLayers)
 		{
-			if (settings.requiredValidationLayers.count(missingLayer))
+			if (m_settings.requiredValidationLayers.count(missingLayer))
 			{
 				throw std::runtime_error("Missing required validation layer: " + missingLayer);
 			}
@@ -33,12 +33,12 @@ namespace Vulkan
 		// Collect instance extensions:
 
 		const auto availableExtensions = availableInstanceExtensions();
-		const auto desiredExtensions = Utils::setUnion(settings.requiredInstanceExtensions, settings.optionalInstanceExtensions);
+		const auto desiredExtensions = Utils::setUnion(m_settings.requiredInstanceExtensions, m_settings.optionalInstanceExtensions);
 		const auto missingExtensions = Utils::setDifference(desiredExtensions, availableExtensions);
 
 		for (const auto& missingExtension : missingExtensions)
 		{
-			if (settings.requiredInstanceExtensions.count(missingExtension))
+			if (m_settings.requiredInstanceExtensions.count(missingExtension))
 			{
 				throw std::runtime_error("Missing required instance extension: " + missingExtension);
 			}
@@ -51,11 +51,11 @@ namespace Vulkan
 
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = settings.applicationName.c_str();
-		appInfo.applicationVersion = getVulkanVersion(settings.applicationVersion);
-		appInfo.pEngineName = settings.engineName.c_str();
-		appInfo.engineVersion = getVulkanVersion(settings.engineVersion);
-		appInfo.apiVersion = getVulkanVersion(settings.vulkanVersion);
+		appInfo.pApplicationName = m_settings.applicationName.c_str();
+		appInfo.applicationVersion = getVulkanVersion(m_settings.applicationVersion);
+		appInfo.pEngineName = m_settings.engineName.c_str();
+		appInfo.engineVersion = getVulkanVersion(m_settings.engineVersion);
+		appInfo.apiVersion = getVulkanVersion(m_settings.vulkanVersion);
 
 		VkInstanceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;

@@ -13,14 +13,14 @@
 
 namespace Vulkan
 {
-	class LogicalDevice;
+	class Device;
 
 
 	class GraphicsPipeline : Utils::NoCopy
 	{
 	public:
 
-		GraphicsPipeline(const LogicalDevice* logicalDevice, uint32_t w, uint32_t h);
+		GraphicsPipeline(const Device* logicalDevice, uint32_t w, uint32_t h);
 
 	private:
 

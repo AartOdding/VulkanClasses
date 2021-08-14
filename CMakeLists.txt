@@ -16,12 +16,13 @@ set(SOURCES
 	src/Vulkan/Utils/SetOperations.hpp
 	src/Vulkan/Utils/Version.hpp
 	
+	src/Vulkan/Device.cpp
+	src/Vulkan/Device.hpp
+	src/Vulkan/Forward.hpp
 	src/Vulkan/GraphicsPipeline.cpp
 	src/Vulkan/GraphicsPipeline.hpp
 	src/Vulkan/Instance.cpp
 	src/Vulkan/Instance.hpp
-	src/Vulkan/LogicalDevice.cpp
-	src/Vulkan/LogicalDevice.hpp
 	src/Vulkan/PhysicalDevice.cpp
 	src/Vulkan/PhysicalDevice.hpp
 	src/Vulkan/PipelineLayout.cpp

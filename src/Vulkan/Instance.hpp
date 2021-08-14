@@ -40,7 +40,6 @@ namespace Vulkan
 		static std::set<std::string> availableValidationLayers();
 		static std::set<std::string> availableInstanceExtensions();
 
-
 		Instance(InstanceSettings settings);
 		~Instance();
 
@@ -50,7 +49,7 @@ namespace Vulkan
 		const std::set<std::string>& instanceExtensions() const;
 
 		bool hasValidationLayer(const std::string& validationLayer) const;
-		bool hasInstanceExtension(const std::string& instanceExtensionName) const;
+		bool hasInstanceExtension(const std::string& instanceExtension) const;
 
 		std::vector<PhysicalDevice> physicalDevices() const;
 
@@ -63,8 +62,8 @@ namespace Vulkan
 		VkInstance m_instance;
 		InstanceSettings m_settings;
 
-		std::set<std::string> m_enabledInstanceExtensionNames;
-		std::set<std::string> m_enabledValidationLayerNames;
+		std::set<std::string> m_instanceExtensions;
+		std::set<std::string> m_validationLayers;
 
 	};
 }

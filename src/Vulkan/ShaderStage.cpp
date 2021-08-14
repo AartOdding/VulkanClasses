@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <Vulkan/Utils/FileUtils.hpp>
-#include <Vulkan/LogicalDevice.hpp>
+#include <Vulkan/Device.hpp>
 #include <Vulkan/ShaderStage.hpp>
 
 
@@ -9,7 +9,7 @@
 namespace Vulkan
 {
 
-	ShaderStage::ShaderStage(const LogicalDevice* logicalDevice, ShaderStageSettings settings)
+	ShaderStage::ShaderStage(const Device* logicalDevice, ShaderStageSettings settings)
 		: m_stage(settings.stage)
 	{
 		auto codeBytes = Utils::readFileBytes(settings.path);

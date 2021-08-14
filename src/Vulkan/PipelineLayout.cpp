@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 #include <Vulkan/PipelineLayout.hpp>
-#include <Vulkan/LogicalDevice.hpp>
+#include <Vulkan/Device.hpp>
 
 
 
@@ -10,7 +10,7 @@ namespace Vulkan
 {
 
 
-	PipelineLayout::PipelineLayout(const LogicalDevice* logicalDevice)
+	PipelineLayout::PipelineLayout(const Device* logicalDevice)
 	{
 		if (!logicalDevice)
 		{

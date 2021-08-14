@@ -3,7 +3,7 @@
 
 namespace Vulkan
 {
-	GraphicsPipeline::GraphicsPipeline(const LogicalDevice* logicalDevice, uint32_t w, uint32_t h)
+	GraphicsPipeline::GraphicsPipeline(const Device* logicalDevice, uint32_t w, uint32_t h)
 		: m_vertexShader(logicalDevice, { VK_SHADER_STAGE_VERTEX_BIT, "shaders/triangle_vert.spv" })
 		, m_fragmentShader(logicalDevice, { VK_SHADER_STAGE_FRAGMENT_BIT, "shaders/triangle_frag.spv" })
 		, m_pipelineLayout(logicalDevice)

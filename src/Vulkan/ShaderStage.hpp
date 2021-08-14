@@ -11,7 +11,7 @@
 
 namespace Vulkan
 {
-	class LogicalDevice;
+	class Device;
 	
 	struct ShaderStageSettings
 	{
@@ -24,7 +24,7 @@ namespace Vulkan
 	{
 	public:
 
-		ShaderStage(const LogicalDevice* logicalDevice, ShaderStageSettings settings);
+		ShaderStage(const Device* logicalDevice, ShaderStageSettings settings);
 
 		VkPipelineShaderStageCreateInfo pipelineStageCreateInfo() const;
 

@@ -17,7 +17,7 @@
 
 #include <Vulkan/GraphicsPipeline.hpp>
 #include <Vulkan/Instance.hpp>
-#include <Vulkan/LogicalDevice.hpp>
+#include <Vulkan/Device.hpp>
 #include <Vulkan/WindowSurface.hpp>
 #include <Vulkan/ShaderStage.hpp>
 #include <Vulkan/SwapChain.hpp>
@@ -85,7 +85,7 @@ int main()
     const auto physicalDevices = vulkanInstance.physicalDevices();
     //printQueues(physicalDevices, windowSurface);
 
-    Vulkan::LogicalDeviceSettings logicalDeviceSettings;
+    Vulkan::DeviceSettings logicalDeviceSettings;
 
     logicalDeviceSettings.physicalDevice = physicalDevices.at(0);
     logicalDeviceSettings.queuesToCreate = 
@@ -97,7 +97,7 @@ int main()
         { "compute1",  { 2, 0.01f } }
     };
 
-    Vulkan::LogicalDevice logicalDevice{ &vulkanInstance, logicalDeviceSettings };
+    Vulkan::Device logicalDevice{ &vulkanInstance, logicalDeviceSettings };
 
     auto swapChain = Vulkan::SwapChain(&logicalDevice, &windowSurface);
 

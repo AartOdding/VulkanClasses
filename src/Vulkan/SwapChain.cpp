@@ -6,13 +6,13 @@
 
 #include <Vulkan/SwapChain.hpp>
 #include <Vulkan/WindowSurface.hpp>
-#include <Vulkan/LogicalDevice.hpp>
+#include <Vulkan/Device.hpp>
 
 
 namespace
 {
 
-	std::vector<std::uint32_t> getUniqueQueueFamilies(const Vulkan::LogicalDevice* logicalDevice)
+	std::vector<std::uint32_t> getUniqueQueueFamilies(const Vulkan::Device* logicalDevice)
 	{
 		const auto& queues = logicalDevice->queueFamilies();
 		std::set<std::uint32_t> queueIndicesSet;
@@ -50,7 +50,7 @@ namespace
 namespace Vulkan
 {
 
-	std::set<VkSurfaceFormatKHR> SwapChain::supportedFormats(const LogicalDevice& logicalDevice, const WindowSurface& windowSurface)
+	std::set<VkSurfaceFormatKHR> SwapChain::supportedFormats(const Device& logicalDevice, const WindowSurface& windowSurface)
 	{
 		std::vector<VkSurfaceFormatKHR> formats;
 
@@ -65,7 +65,7 @@ namespace Vulkan
 		return std::set<VkSurfaceFormatKHR>(formats.begin(), formats.end());
 	}
 
-	SwapChain::SwapChain(const LogicalDevice* logicalDevice, const WindowSurface* windowSurface, SwapChainSettings settings)
+	SwapChain::SwapChain(const Device* logicalDevice, const WindowSurface* windowSurface, SwapChainSettings settings)
 		: m_logicalDevice(logicalDevice)
 		, m_windowSurface(windowSurface)
 		, m_createInfo{}

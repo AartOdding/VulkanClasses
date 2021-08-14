@@ -3,7 +3,7 @@
 
 #include <Vulkan/Utils/SetOperations.hpp>
 #include <Vulkan/Instance.hpp>
-#include <Vulkan/LogicalDevice.hpp>
+#include <Vulkan/Device.hpp>
 
 
 namespace
@@ -27,9 +27,9 @@ namespace
 namespace Vulkan
 {
 
-	LogicalDevice::LogicalDevice(const Instance* instance, LogicalDeviceSettings settings)
+	Device::Device(DeviceSettings settings, const Instance* instance)
 		: m_physicalDevice(settings.physicalDevice)
-		, m_enabledDeviceFeatures(settings.deviceFeatures)
+		, m_enabledDeviceFeatures(settings.requiredDeviceFeatures)
 	{
 		if (instance == nullptr)
 		{
@@ -135,50 +135,34 @@ namespace Vulkan
 
 	}
 
-	LogicalDevice::~LogicalDevice()
+	Device::~Device()
 	{
-		std::cout << "Destroying Logical Device." << std::endl;
-		vkDestroyDevice(m_logicalDevice, nullptr);
+		vkDestroyDevice(m_device, nullptr);
 	}
 
-	VkDevice LogicalDevice::get() const
+	const DeviceSettings& Device::settings() const
 	{
-		return m_logicalDevice;
+		return m_settings;
 	}
 
-	VkPhysicalDevice LogicalDevice::physicalDevice() const
+	const std::set<std::string>& Device::deviceExtensions() const
 	{
-		return m_physicalDevice;
+		return m_deviceExtensions;
 	}
 
-	const std::unordered_map<std::string, VkQueue>& LogicalDevice::queues() const
+	const VkPhysicalDeviceFeatures& Device::deviceFeatures() const
 	{
-		return m_queues;
+		return m_deviceFeatures;
 	}
 
-	const std::unordered_map<std::string, int>& LogicalDevice::queueFamilies() const
+	bool Device::hasDeviceExtension(const std::string& deviceExtensionName) const
 	{
-		return m_queueFamilies;
+		return m_deviceExtensions.count(deviceExtensionName);
 	}
 
-	const std::unordered_map<std::string, float>& LogicalDevice::queuePriorities() const
+	Device::operator VkDevice() const
 	{
-		return m_queuePriorities;
-	}
-
-	const std::set<std::string>& LogicalDevice::enabledDeviceExtensionNames() const
-	{
-		return m_enabledDeviceExtensionNames;
-	}
-
-	bool LogicalDevice::isDeviceExtensionEnabled(const std::string& deviceExtensionName) const
-	{
-		return m_enabledDeviceExtensionNames.count(deviceExtensionName);
-	}
-
-	const VkPhysicalDeviceFeatures& LogicalDevice::enabledDeviceFeatures() const
-	{
-		return m_enabledDeviceFeatures;
+		return m_device;
 	}
 
 }
